@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Insurance Package Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-6">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-2xl font-bold text-blue-700">📦 PruBSN Plan</h1>
+      <p class="text-gray-600 text-sm">Provided by PruBSN Takaful</p>
+    </div>
+
+    <!-- Target Group -->
+    <div class="bg-blue-50 p-4 rounded-lg">
+      <h2 class="text-blue-800 font-semibold mb-2">🎯 Target Group</h2>
+      <ul class="list-disc list-inside text-gray-700">
+        <li>Income: RM3,000 – RM6,000</li>
+        <li>Age: 25 – 40</li>
+        <li>Dependents: 1 – 3</li>
+      </ul>
+    </div>
+
+    <!-- Coverage Breakdown -->
+    <div>
+      <h2 class="text-blue-800 font-semibold mb-2">📊 Coverage Breakdown</h2>
+      <table class="w-full table-auto border-collapse border border-gray-300 text-sm">
+        <thead class="bg-blue-200 text-blue-900">
+          <tr>
+            <th class="border px-4 py-2 text-left">Coverage</th>
+            <th class="border px-4 py-2 text-left">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-white">
+            <td class="border px-4 py-2">🏥 Medical</td>
+            <td class="border px-4 py-2">Up to RM100,000/year</td>
+          </tr>
+          <tr class="bg-gray-50">
+            <td class="border px-4 py-2">💰 Savings</td>
+            <td class="border px-4 py-2">RM500/month savings plan</td>
+          </tr>
+          <tr class="bg-white">
+            <td class="border px-4 py-2">⚰️ Death Benefit</td>
+            <td class="border px-4 py-2">RM50,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Video -->
+    <div>
+      <h2 class="text-blue-800 font-semibold mb-2">🎥 Learn More</h2>
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe class="w-full h-64 rounded-lg" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-between gap-4 mt-6">
+      <a href="/agent-contact?state=selangor" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+        📞 Contact Agent
+      </a>
+      <div class="flex gap-4">
+        <a href="/advice" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+          🔙 Back to Advice
+        </a>
+        <a href="/all-packages" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+          📦 View All Packages
+        </a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
