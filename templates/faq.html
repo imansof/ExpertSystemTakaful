@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQs - Takaful Advisor</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eef6ff;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0d6efd;
+    }
+
+    .faq-item {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .faq-item h3 {
+      color: #0d6efd;
+      margin-bottom: 5px;
+    }
+
+    .faq-item p {
+      color: #333;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav style="
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+">
+  <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
+    🧭 Takaful Advisor
+  </div>
+  <div style="display: flex; gap: 20px; font-size: 15px;">
+    <a href="{{ url_for('package') }}" style="color: #333; text-decoration: none;">🧠 Customized for You</a>
+    <a href="{{ url_for('all_packages') }}" style="color: #333; text-decoration: none;">📦 View All Packages</a>
+    <a href="{{ url_for('agent') }}" style="color: #333; text-decoration: none;">🧑‍💼 Find Agent</a>
+    <a href="{{ url_for('faq') }}" style="color: #0d6efd; font-weight: 600; text-decoration: underline;">❓ FAQs</a>
+    <a href="{{ url_for('support') }}" style="color: #333; text-decoration: none;">💬 Support</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>❓ Frequently Asked Questions</h1>
+
+  <div class="faq-item">
+    <h3>What is Takaful?</h3>
+    <p>A Shariah-compliant mutual assistance scheme to protect participants financially in times of need.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>How do I choose the right package?</h3>
+    <p>Use the Customized for You section to find a plan based on your income, age, and goals.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Can I cancel anytime?</h3>
+    <p>Yes, but check your contract or speak to your assigned agent for details.</p>
+  </div>
+</div>
+
+</body>
+</html>
+

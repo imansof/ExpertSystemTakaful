@@ -11,143 +11,108 @@
       margin: 0;
       padding: 20px;
     }
-
     .chat-container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-    }
+  max-width: 500px; /* smaller */
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
 
-    .chat-bubble {
-      max-width: 90%;
-      padding: 12px 16px;
-      margin: 10px 0;
-      border-radius: 16px;
-      line-height: 1.4;
-    }
+.input-field {
+  width: 90%;
+  padding: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-    .bot {
-      background-color: #0d6efd;
-      color: white;
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
+.chat-bubble.bot {
+  font-size: 15px;
+  padding: 10px 14px;
+  background-color: #0d6efd;
+  border-bottom-left-radius: 5px;
+}
 
-    .input-field {
-      width: 95%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+.cta-button {
+  font-size: 15px;
+  padding: 10px 22px;
+}
 
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 15px 0;
-    }
-
-    .option-button {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 20px;
-      background-color: #0d6efd;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .option-button.active {
-      background-color: #084298;
-    }
-
-    select {
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .center {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    a.cta-button {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #0d6efd;
-      color: white;
-      border-radius: 20px;
-      text-decoration: none;
-    }
-
-    a.cta-button:hover {
-      background-color: #084298;
-    }
   </style>
 </head>
+
+<nav style="position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #ddd; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-family: 'Segoe UI', sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+  <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
+    🧭 Takaful Advisor
+  </div>
+  <div style="display: flex; gap: 20px; font-size: 15px;">
+    <a href="{{ url_for('package') }}" style="color: #0d6efd; text-decoration: underline; font-weight: 500;">🧠 Customized for You</a>
+    <a href="/all-packages" style="color: #333; text-decoration: none;">📦 View All Packages</a>
+    <a href="{{ url_for('agent') }}" style="color: #333; text-decoration: none;">🧑‍💼 Find Agent</a>
+    <a href="/faq" style="color: #333; text-decoration: none;">❓ FAQs</a>
+    <a href="/support" style="color: #333; text-decoration: none;">💬 Support</a>
+  </div>
+</nav>
+
+
+
+
 <body>
 
 <div class="chat-container">
-  <div class="chat-bubble bot">👤 What's your full name?</div>
-  <input type="text" class="input-field" placeholder="Full Name" required>
+  <h2 style="text-align: center; margin-top: 10px; color: #0d6efd;">📝 Takaful Package Advisor</h2>
+  <p style="text-align: center; font-size: 15px; color: #555; margin-bottom: 20px;">
+    Fill in your details to get the best package recommendation tailored to you!
+  </p>
 
-  <div class="chat-bubble bot">🎂 What's your date of birth?</div>
-  <input type="date" class="input-field" id="dob" onchange="updateAge()" required>
+  <form action="#" method="POST" style="font-size: 15px;">
 
-  <div class="chat-bubble bot">📅 Your age is:</div>
-  <input type="number" class="input-field" id="age" readonly required>
+    <!-- Example input -->
+    <div class="chat-bubble bot">👤 What's your full name?</div>
+    <input type="text" name="fullname" class="input-field" placeholder="Full Name" required>
 
-  <div class="chat-bubble bot">💵 What's your monthly salary (RM)?</div>
-  <input type="number" class="input-field" placeholder="e.g. 3500" required>
+    <div class="chat-bubble bot">🎂 What's your date of birth?</div>
+    <input type="date" name="dob" class="input-field" id="dob" onchange="updateAge()" required>
 
-  <div class="chat-bubble bot">💍 What is your marital status?</div>
-  <select class="input-field" required>
-    <option value="">-- Select Status --</option>
-    <option value="Single">Single</option>
-    <option value="Married">Married</option>
-  </select>
+    <div class="chat-bubble bot">📅 Your age is:</div>
+    <input type="number" name="age" class="input-field" id="age" readonly required>
 
-  <div class="chat-bubble bot">👶 How many dependents do you have?</div>
-  <input type="number" class="input-field" placeholder="e.g. 2" required>
+    <div class="chat-bubble bot">💵 What's your monthly salary (RM)?</div>
+    <input type="number" name="salary" class="input-field" placeholder="e.g. 3500" min="0" required>
 
-  <div class="chat-bubble bot">🎯 What is your goal for this Takaful plan?</div>
-  <div class="options" id="goal-options">
-    <button class="option-button" onclick="selectGoal('Saving')">💰 Saving</button>
-    <button class="option-button" onclick="selectGoal('Medical')">🏥 Medical</button>
-    <button class="option-button" onclick="selectGoal('Family')">👨‍👩‍👧 Family</button>
-    <button class="option-button" onclick="selectGoal('Education')">📚 Education</button>
-    <button class="option-button" onclick="selectGoal('Retirement')">💼 Retirement</button>
-  </div>
-
-  <div class="chat-bubble bot hidden" id="state-question">🌍 Which state are you from? We’ll recommend an agent in your area.</div>
-  <div class="hidden" id="state-select">
-    <select onchange="selectState()" id="state-dropdown" class="input-field">
-      <option value="" disabled selected>Select your state</option>
-      <option value="Selangor">Selangor</option>
-      <option value="Johor">Johor</option>
-      <option value="Sabah">Sabah</option>
-      <option value="Penang">Penang</option>
-      <option value="Sarawak">Sarawak</option>
+    <div class="chat-bubble bot">💍 What is your marital status?</div>
+    <select name="marital_status" class="input-field" required>
+      <option value="">-- Select Status --</option>
+      <option value="Single">Single</option>
+      <option value="Married">Married</option>
     </select>
-  </div>
 
-  <div class="chat-bubble bot hidden" id="result-message">✅ We’ll now show you the best package based on your goal and state.</div>
-  <div class="chat-bubble bot hidden" id="continue-message">📦 Click below to continue.</div>
+    <div class="chat-bubble bot">📍 What is your current address?</div>
+<input type="text" name="address" class="input-field" placeholder="Enter your full address" required>
 
-  <div class="center hidden" id="cta-button">
-    <a href="/package_details" class="cta-button">📥 View Recommended Package</a>
-  </div>
+    <div class="chat-bubble bot">🚬 Do you smoke?</div>
+<select name="smoke" class="input-field" required>
+  <option value="">-- Select Option --</option>
+  <option value="No">No</option>
+  <option value="Yes">Yes</option>
+</select>
+
+<div class="chat-bubble bot">🩺 Do you have any existing medical conditions?</div>
+<select name="medical_condition" class="input-field" required>
+  <option value="">-- Select Condition --</option>
+  <option value="None">None</option>
+  <option value="Diabetes">Diabetes</option>
+  <option value="Hypertension">Hypertension</option>
+  <option value="Other">Other</option>
+</select>
+
+    <div class="center">
+      <button type="submit" class="cta-button">📥 View Recommended Package</button>
+    </div>
+  </form>
 </div>
 
 <script>
@@ -162,24 +127,8 @@
     }
     document.getElementById("age").value = age;
   }
-
-  function selectGoal(goal) {
-    document.querySelectorAll("#goal-options .option-button").forEach(btn => btn.classList.remove("active"));
-    event.target.classList.add("active");
-    window.selectedGoal = goal;
-
-    // Show state question
-    document.getElementById("state-question").classList.remove("hidden");
-    document.getElementById("state-select").classList.remove("hidden");
-  }
-
-  function selectState() {
-    document.getElementById("result-message").classList.remove("hidden");
-    document.getElementById("continue-message").classList.remove("hidden");
-    document.getElementById("cta-button").classList.remove("hidden");
-  }
 </script>
 
 </body>
-</html>
 
+</html>

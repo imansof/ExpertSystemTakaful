@@ -18,9 +18,7 @@
             max-width: 400px;
             margin: auto;
         }
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
+        input {
             width: 90%;
             padding: 10px;
             margin: 10px 0;
@@ -31,12 +29,10 @@
             background-color: #0d6efd;
             color: white;
             padding: 10px 25px;
-            text-decoration: none;
             border-radius: 8px;
-            display: inline-block;
-            margin-top: 20px;
             border: none;
             cursor: pointer;
+            margin-top: 20px;
         }
         .register-button:hover {
             background-color: #084298;
@@ -46,14 +42,14 @@
 <body>
     <div class="container">
         <h2>📝 Create Your Account</h2>
-        <!-- 🔁 CHANGE MADE HERE -->
-        <form action="login.html" method="GET">
-            <input type="text" name="fullname" placeholder="Full Name" required><br>
-            <input type="email" name="email" placeholder="Email Address" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
-            <button class="register-button" type="submit">Register</button>
-        </form>
+        <input type="text" placeholder="Full Name" required><br>
+        <input type="email" placeholder="Email Address" required><br>
+        <input type="password" placeholder="Password" required><br>
+        <input type="password" placeholder="Confirm Password" required><br>
+        <!-- DIRECT LINK -->
+        <button class="register-button" onclick="location.href='package.html'">Register</button>
     </div>
 </body>
 </html>
+
+
