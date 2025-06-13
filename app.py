@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from Takaful import signup as takaful_signup, login as takaful_login, get_recommendations
 
 app = Flask(__name__)
-
+# Set your SECRET_KEY here:
+app.config['SECRET_KEY'] = 'surematchisthebest'
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -11,23 +13,61 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        # Here you can add real authentication logic
 
-        return redirect(url_for('package'))  # ✅ Redirect after login
+        if takaful_login(email, password): # Use the login function from Takaful.py
+            session['username'] = email # Store username in session
+            return redirect(url_for('start')) # Redirect to start after login
+        else:
+            return render_template('login.html', error="Invalid username or password.")
     return render_template('login.html')
 
-
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        username = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password'] # Added for frontend validation
+
+        if password != confirm_password:
+            return render_template('register.html', error="Passwords do not match.")
+
+        result_message = takaful_signup(username, password) # Use the signup function from Takaful.py
+
+        if "successful" in result_message:
+            session['username'] = username # Store username in session upon successful signup
+            return redirect(url_for('login'))
+        else:
+            return render_template('register.html', error=result_message)
     return render_template('register.html')
 
 @app.route('/start')
 def start():
+    if 'username' not in session:
+        return redirect(url_for('login')) # Redirect to login if not authenticated
     return render_template('start.html')
 
-@app.route('/package')
+@app.route('/package', methods=['GET', 'POST']) # Allow POST for questionnaire submission
 def package():
-    return render_template('package.html')
+    if 'username' not in session:
+        return redirect(url_for('login')) # Redirect if not logged in
+
+    if request.method == 'POST':
+        # Get data from form (from package.html)
+        age = int(request.form['age'])
+        income = int(request.form['income'])
+        marital_status = request.form['marital_status'].lower()
+        has_dependents = request.form['has_dependents'].lower() == 'yes'
+        goal = request.form['goal'].lower()
+
+        username = session['username'] # Get username from session
+
+        recommended_plans = get_recommendations(username, age, income, marital_status, has_dependents, goal)
+        # Pass recommendations to the template
+        return render_template('package.html', recommendations=recommended_plans)
+
+    # For GET requests (initial load of the page or after login)
+    return render_template('package.html', recommendations=None) # Pass None initially
+
 
 @app.route('/agent')
 def agent():

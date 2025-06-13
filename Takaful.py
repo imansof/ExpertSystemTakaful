@@ -1,45 +1,92 @@
 import sqlite3
 
 # ======== SETUP DATABASE STRUCTURE ========
-conn = sqlite3.connect('takaful_users.db')
-cursor = conn.cursor()
+#conn = sqlite3.connect('takaful_users.db')
+#cursor = conn.cursor()
+
+def get_db_connection():
+    # This function will return a new connection for the current thread/request
+    conn = sqlite3.connect('takaful_users.db')
+    conn.row_factory = sqlite3.Row # Optional: This makes rows behave like dictionaries
+    return conn
+
+# Function to ensure table creation, run once or when needed
+def initialize_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Create users table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    ''')
+
+    # Create user input table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_input (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            age INTEGER,
+            income INTEGER,
+            marital_status TEXT,
+            has_dependents BOOLEAN,
+            goal TEXT,
+            FOREIGN KEY (username) REFERENCES users (username)
+        )
+    ''')
+    conn.commit()
+    conn.close() # Close connection after initialization
+
+# Call initialize_db() once when the module is imported to ensure tables exist
+# Or, call it explicitly from app.py on app startup.
+initialize_db()
 
 # Create users table
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    )
-''')
+#cursor.execute('''
+#    CREATE TABLE IF NOT EXISTS users (
+#        id INTEGER PRIMARY KEY AUTOINCREMENT,
+#        username TEXT UNIQUE NOT NULL,
+#        password TEXT NOT NULL
+#    )
+#''')
 
 # Create user input table
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS user_input (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        age INTEGER,
-        income INTEGER,
-        marital_status TEXT,
-        has_dependents BOOLEAN,
-        goal TEXT,
-        FOREIGN KEY (username) REFERENCES users (username)
-    )
-''')
-conn.commit()
+#cursor.execute('''
+#    CREATE TABLE IF NOT EXISTS user_input (
+#        id INTEGER PRIMARY KEY AUTOINCREMENT,
+#        username TEXT NOT NULL,
+#        age INTEGER,
+#        income INTEGER,
+#        marital_status TEXT,
+#        has_dependents BOOLEAN,
+#        goal TEXT,
+#        FOREIGN KEY (username) REFERENCES users (username)
+#    )
+#''')
+#conn.commit()
 
 # ======== LOGIN / SIGNUP FUNCTIONS ========
 def signup(username, password):
+    conn = get_db_connection()  # Get a new connection for this operation
+    cursor = conn.cursor()
     try:
         cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
         return "Signup successful!"
     except sqlite3.IntegrityError:
         return "Username already exists."
+    finally:
+        conn.close()  # Always close the connection
 
 def login(username, password):
+    conn = get_db_connection()  # Get a new connection for this operation
+    cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
     result = cursor.fetchone()
+    conn.close()  # Always close the connection
     return result is not None
 
 # ======== PLAN LOGIC ========
@@ -86,87 +133,39 @@ plans = [
     TakafulPlan("PruBSN DamaiGenZ", "basic_protection", max_age=30, max_income=3000, marital_required="single", dependents_required=False)
 ]
 
+# Function to get recommendations (updated to manage its own connection)
 def get_recommendations(username, age, income, marital_status, has_dependents, goal):
-    # Save user input to DB
-    cursor.execute('''
-        INSERT INTO user_input (username, age, income, marital_status, has_dependents, goal)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (username, age, income, marital_status, int(has_dependents), goal))
-    conn.commit()
+    conn = get_db_connection() # Get a new connection for this operation
+    cursor = conn.cursor()
+    try:
+        # Save user input to DB
+        cursor.execute('''
+            INSERT INTO user_input (username, age, income, marital_status, has_dependents, goal)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (username, age, income, marital_status, int(has_dependents), goal))
+        conn.commit()
 
-    # Fetch latest input for this user
-    cursor.execute('''
-        SELECT age, income, marital_status, has_dependents, goal
-        FROM user_input WHERE username=? ORDER BY id DESC LIMIT 1
-    ''', (username,))
-    row = cursor.fetchone()
+        # Fetch latest input for this user
+        cursor.execute('''
+            SELECT age, income, marital_status, has_dependents, goal
+            FROM user_input WHERE username=? ORDER BY id DESC LIMIT 1
+        ''', (username,))
+        row = cursor.fetchone()
 
-    if row:
-        latest_user = {
-            "age": row[0],
-            "income": row[1],
-            "marital_status": row[2],
-            "has_dependents": bool(row[3]),
-            "goal": row[4]
-        }
-
-        # Match plans
-        matched = [plan.name for plan in plans if plan.is_match(latest_user)]
-        return matched
-    return [] # Return empty list if no user data found (shouldn't happen if just saved)
-
-# ======== MAIN FLOW SIMULATION ========
-def simulate_flow():
-    # Signup or login
-    username = input("Enter username: ")
-    password = input("Enter password: ")
-
-    action = input("Type 'signup' or 'login': ").lower()
-    if action == "signup":
-        print(signup(username, password))
-    if not login(username, password):
-        print("Login failed. Exiting.")
-        return
-    print("Login successful!\n")
-
-    # Collect user input
-    age = int(input("Enter your age: "))
-    income = int(input("Enter your monthly income: "))
-    marital_status = input("Enter marital status (single/married): ").lower()
-    has_dependents = input("Do you have dependents? (yes/no): ").lower() == "yes"
-    goal = input("Enter your goal (basic_protection/medical/family_protection/legacy/savings/critical_illness): ")
-
-    # Save user input to DB
-    cursor.execute('''
-        INSERT INTO user_input (username, age, income, marital_status, has_dependents, goal)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (username, age, income, marital_status, int(has_dependents), goal))
-    conn.commit()
-
-    # Fetch latest input for this user
-    cursor.execute('''
-        SELECT age, income, marital_status, has_dependents, goal
-        FROM user_input WHERE username=? ORDER BY id DESC LIMIT 1
-    ''', (username,))
-    row = cursor.fetchone()
-
-    if row:
-        latest_user = {
-            "age": row[0],
-            "income": row[1],
-            "marital_status": row[2],
-            "has_dependents": bool(row[3]),
-            "goal": row[4]
-        }
-
-        # Match plans
-        matched = [plan.name for plan in plans if plan.is_match(latest_user)]
-        if matched:
-            print("\nRecommended Plan(s):")
-            for plan in matched:
-                print("-", plan)
-        else:
-            print("\nNo exact match. Recommend: PruBSN Asas360 + suitable rider.")
+        if row:
+            latest_user = {
+                "age": row[0],
+                "income": row[1],
+                "marital_status": row[2],
+                "has_dependents": bool(row[3]),
+                "goal": row[4]
+            }
+            # Match plans
+            matched = [plan.name for plan in plans if plan.is_match(latest_user)]
+            return matched
+        return []
+    finally:
+        conn.close() # Always close the connection
 
 #simulate_flow()
 #conn.close()

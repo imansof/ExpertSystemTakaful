@@ -12,123 +12,161 @@
       padding: 20px;
     }
     .chat-container {
-  max-width: 500px; /* smaller */
-  margin: auto;
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.1);
-}
+      max-width: 500px; /* smaller */
+      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
 
-.input-field {
-  width: 90%;
-  padding: 8px;
-  margin: 8px 0;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+    .input-field {
+      width: 90%;
+      padding: 8px;
+      margin: 8px 0;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
 
-.chat-bubble.bot {
-  font-size: 15px;
-  padding: 10px 14px;
-  background-color: #0d6efd;
-  border-bottom-left-radius: 5px;
-}
+    .chat-bubble.bot {
+      font-size: 15px;
+      padding: 10px 14px;
+      background-color: #0d6efd;
+      border-bottom-left-radius: 5px;
+      color: white; /* Added for readability */
+      margin-top: 15px; /* Added spacing */
+    }
 
-.cta-button {
-  font-size: 15px;
-  padding: 10px 22px;
-}
+    .cta-button {
+      font-size: 15px;
+      padding: 10px 22px;
+      background-color: #0d6efd; /* Added button styling */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
+    .cta-button:hover {
+      background-color: #084298;
+    }
+    .recommendation-list { /* Style for recommended plans */
+      margin-top: 20px;
+      text-align: left;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+    .recommendation-list h3 {
+      color: #0d6efd;
+    }
+    .recommendation-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .recommendation-list li {
+      background-color: #f0f9ff;
+      border: 1px solid #cceeff;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      color: #333;
+    }
   </style>
 </head>
 
-<nav style="position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #ddd; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-family: 'Segoe UI', sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
-  <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
-    🧭 Takaful Advisor
-  </div>
-  <div style="display: flex; gap: 20px; font-size: 15px;">
-    <a href="{{ url_for('package') }}" style="color: #0d6efd; text-decoration: underline; font-weight: 500;">🧠 Customized for You</a>
-    <a href="/all-packages" style="color: #333; text-decoration: none;">📦 View All Packages</a>
-    <a href="{{ url_for('agent') }}" style="color: #333; text-decoration: none;">🧑‍💼 Find Agent</a>
-    <a href="/faq" style="color: #333; text-decoration: none;">❓ FAQs</a>
-    <a href="/support" style="color: #333; text-decoration: none;">💬 Support</a>
-  </div>
-</nav>
+    <nav style="position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #ddd; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-family: 'Segoe UI', sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+      <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
+        🧭 SureMatch
+      </div>
+      <div style="display: flex; gap: 20px; font-size: 15px;">
+        <a href="{{ url_for('package') }}" style="color: #0d6efd; text-decoration: underline; font-weight: 500;">🧠 Customized for You</a>
+        <a href="/all-packages" style="color: #333; text-decoration: none;">📦 View All Packages</a>
+        <a href="{{ url_for('agent') }}" style="color: #333; text-decoration: none;">🧑‍💼 Find Agent</a>
+        <a href="/faq" style="color: #333; text-decoration: none;">❓ FAQs</a>
+        <a href="/support" style="color: #333; text-decoration: none;">💬 Support</a>
+      </div>
+    </nav>
 
+    <body>
 
+    <div class="chat-container">
+      <h2 style="text-align: center; margin-top: 10px; color: #0d6efd;">📝 Takaful Package Advisor</h2>
+      <p style="text-align: center; font-size: 15px; color: #555; margin-bottom: 20px;">
+        Fill in your details to get the best package recommendation tailored to you!
+      </p>
 
+      <form action="{{ url_for('package') }}" method="POST" style="font-size: 15px;">
+        <div class="chat-bubble bot">🎂 What's your date of birth?</div>
+        <input type="date" name="dob" class="input-field" id="dob" onchange="updateAge()" required>
 
-<body>
+        <div class="chat-bubble bot">📅 Your age is:</div>
+        <input type="number" name="age" class="input-field" id="age" readonly required>
 
-<div class="chat-container">
-  <h2 style="text-align: center; margin-top: 10px; color: #0d6efd;">📝 Takaful Package Advisor</h2>
-  <p style="text-align: center; font-size: 15px; color: #555; margin-bottom: 20px;">
-    Fill in your details to get the best package recommendation tailored to you!
-  </p>
+        <div class="chat-bubble bot">💵 What's your monthly income (RM)?</div>
+        <input type="number" name="income" class="input-field" placeholder="e.g. 3500" min="0" required>
 
-  <form action="#" method="POST" style="font-size: 15px;">
+        <div class="chat-bubble bot">💍 What is your marital status?</div>
+        <select name="marital_status" class="input-field" required>
+          <option value="">-- Select Status --</option>
+          <option value="single">Single</option>
+          <option value="married">Married</option>
+        </select>
 
-    <!-- Example input -->
-    <div class="chat-bubble bot">👤 What's your full name?</div>
-    <input type="text" name="fullname" class="input-field" placeholder="Full Name" required>
+        <div class="chat-bubble bot">👪 Do you have dependents?</div>
+        <select name="has_dependents" class="input-field" required>
+          <option value="">-- Select Option --</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
 
-    <div class="chat-bubble bot">🎂 What's your date of birth?</div>
-    <input type="date" name="dob" class="input-field" id="dob" onchange="updateAge()" required>
+        <div class="chat-bubble bot">🎯 What is your main goal for Takaful coverage?</div>
+        <select name="goal" class="input-field" required>
+          <option value="">-- Select Goal --</option>
+          <option value="basic_protection">Basic Protection</option>
+          <option value="medical">Medical Coverage</option>
+          <option value="family_protection">Family Protection</option>
+          <option value="legacy">Legacy Planning</option>
+          <option value="savings">Savings / Investment</option>
+          <option value="critical_illness">Critical Illness Coverage</option>
+        </select>
 
-    <div class="chat-bubble bot">📅 Your age is:</div>
-    <input type="number" name="age" class="input-field" id="age" readonly required>
+        <div class="center">
+          <button type="submit" class="cta-button">📥 View Recommended Package</button>
+        </div>
+      </form>
 
-    <div class="chat-bubble bot">💵 What's your monthly salary (RM)?</div>
-    <input type="number" name="salary" class="input-field" placeholder="e.g. 3500" min="0" required>
+      {% if recommendations %}
+        <div class="recommendation-list">
+          <h3>✨ Recommended Plan(s) for You:</h3>
+          <ul>
+            {% for plan in recommendations %}
+              <li>{{ plan }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
+        <div class="recommendation-list">
+          <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
+        </div>
+      {% endif %}
 
-    <div class="chat-bubble bot">💍 What is your marital status?</div>
-    <select name="marital_status" class="input-field" required>
-      <option value="">-- Select Status --</option>
-      <option value="Single">Single</option>
-      <option value="Married">Married</option>
-    </select>
-
-    <div class="chat-bubble bot">📍 What is your current address?</div>
-<input type="text" name="address" class="input-field" placeholder="Enter your full address" required>
-
-    <div class="chat-bubble bot">🚬 Do you smoke?</div>
-<select name="smoke" class="input-field" required>
-  <option value="">-- Select Option --</option>
-  <option value="No">No</option>
-  <option value="Yes">Yes</option>
-</select>
-
-<div class="chat-bubble bot">🩺 Do you have any existing medical conditions?</div>
-<select name="medical_condition" class="input-field" required>
-  <option value="">-- Select Condition --</option>
-  <option value="None">None</option>
-  <option value="Diabetes">Diabetes</option>
-  <option value="Hypertension">Hypertension</option>
-  <option value="Other">Other</option>
-</select>
-
-    <div class="center">
-      <button type="submit" class="cta-button">📥 View Recommended Package</button>
     </div>
-  </form>
-</div>
 
-<script>
-  function updateAge() {
-    const dobInput = document.getElementById("dob").value;
-    const dob = new Date(dobInput);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    document.getElementById("age").value = age;
-  }
-</script>
+    <script>
+      function updateAge() {
+        const dobInput = document.getElementById("dob").value;
+        const dob = new Date(dobInput);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        document.getElementById("age").value = age;
+      }
+    </script>
 
-</body>
+    </body>
 
 </html>

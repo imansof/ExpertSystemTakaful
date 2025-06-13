@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Takaful Expert System</title>
+    <title>Login - SureMatch</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -52,17 +52,24 @@
         .register-link a:hover {
             text-decoration: underline;
         }
+        .error-message { /* Added style for error message */
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>🔐 Login to Your Account</h2>
         <form action="{{ url_for('login') }}" method="POST">
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button class="login-button" type="submit">Login</button>
-</form>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button class="login-button" type="submit">Login</button>
+        </form>
 
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
 
         <div class="register-link">
             Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
