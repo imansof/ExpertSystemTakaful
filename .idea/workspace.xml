@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="098e7a3f-0014-42dd-b1b9-27c5021d1338" name="Changes" comment="recommend button to new recommend page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Takaful.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takaful.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/takaful_users.db" beforeDir="false" afterPath="$PROJECT_DIR$/takaful_users.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Recommend_Page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Recommend_Page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/all-packages.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/all-packages.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/package.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/package.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -172,10 +173,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="recommend button to new recommend page" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ExpertSystemTakaful$app.coverage" NAME="app Coverage Results" MODIFIED="1749937483790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ExpertSystemTakaful$Takaful.coverage" NAME="Takaful Coverage Results" MODIFIED="1749631161013" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ExpertSystemTakaful$ui_krr.coverage" NAME="ui krr Coverage Results" MODIFIED="1749911505796" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0/LocalCache/local-packages/Python311/site-packages/prompt_toolkit/filters" />
     <SUITE FILE_PATH="coverage/ExpertSystemTakaful$main.coverage" NAME="main Coverage Results" MODIFIED="1748014441186" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ExpertSystemTakaful$app.coverage" NAME="app Coverage Results" MODIFIED="1749928443269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ExpertSystemTakaful$engine.coverage" NAME="engine Coverage Results" MODIFIED="1749630184385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

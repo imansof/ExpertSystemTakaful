@@ -1,21 +1,16 @@
+from experta import *
 import sqlite3
 
-# ======== SETUP DATABASE STRUCTURE ========
-#conn = sqlite3.connect('takaful_users.db')
-#cursor = conn.cursor()
-
+# ======== DATABASE CONNECTION ========
 def get_db_connection():
-    # This function will return a new connection for the current thread/request
     conn = sqlite3.connect('takaful_users.db')
-    conn.row_factory = sqlite3.Row # Optional: This makes rows behave like dictionaries
+    conn.row_factory = sqlite3.Row
     return conn
 
-# Function to ensure table creation, run once or when needed
 def initialize_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Create users table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +19,6 @@ def initialize_db():
         )
     ''')
 
-    # Create user input table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_input (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,39 +32,13 @@ def initialize_db():
         )
     ''')
     conn.commit()
-    conn.close() # Close connection after initialization
+    conn.close()
 
-# Call initialize_db() once when the module is imported to ensure tables exist
-# Or, call it explicitly from app.py on app startup.
 initialize_db()
 
-# Create users table
-#cursor.execute('''
-#    CREATE TABLE IF NOT EXISTS users (
-#        id INTEGER PRIMARY KEY AUTOINCREMENT,
-#        username TEXT UNIQUE NOT NULL,
-#        password TEXT NOT NULL
-#    )
-#''')
-
-# Create user input table
-#cursor.execute('''
-#    CREATE TABLE IF NOT EXISTS user_input (
-#        id INTEGER PRIMARY KEY AUTOINCREMENT,
-#        username TEXT NOT NULL,
-#        age INTEGER,
-#        income INTEGER,
-#        marital_status TEXT,
-#        has_dependents BOOLEAN,
-#        goal TEXT,
-#        FOREIGN KEY (username) REFERENCES users (username)
-#    )
-#''')
-#conn.commit()
-
-# ======== LOGIN / SIGNUP FUNCTIONS ========
+# ======== LOGIN / SIGNUP ========
 def signup(username, password):
-    conn = get_db_connection()  # Get a new connection for this operation
+    conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
@@ -79,93 +47,89 @@ def signup(username, password):
     except sqlite3.IntegrityError:
         return "Username already exists."
     finally:
-        conn.close()  # Always close the connection
+        conn.close()
 
 def login(username, password):
-    conn = get_db_connection()  # Get a new connection for this operation
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
     result = cursor.fetchone()
-    conn.close()  # Always close the connection
+    conn.close()
     return result is not None
 
-# ======== PLAN LOGIC ========
-class TakafulPlan:
-    def __init__(self, name, goal, min_age=None, max_age=None,
-                 min_income=None, max_income=None,
-                 marital_required="any", dependents_required="any"):
-        self.name = name
-        self.goal = goal
-        self.min_age = min_age
-        self.max_age = max_age
-        self.min_income = min_income
-        self.max_income = max_income
-        self.marital_required = marital_required
-        self.dependents_required = dependents_required
+# ======== EXPERTA FACT & ENGINE ========
+class UserInput(Fact):
+    age = Field(int, mandatory=True)
+    income = Field(int, mandatory=True)
+    marital_status = Field(str, mandatory=True)
+    has_dependents = Field(bool, mandatory=True)
+    goal = Field(str, mandatory=True)
 
-    def is_match(self, user):
-        if self.goal != user["goal"]:
-            return False
-        if self.min_age is not None and user["age"] < self.min_age:
-            return False
-        if self.max_age is not None and user["age"] > self.max_age:
-            return False
-        if self.min_income is not None and user["income"] < self.min_income:
-            return False
-        if self.max_income is not None and user["income"] > self.max_income:
-            return False
-        if self.marital_required != "any" and self.marital_required != user["marital_status"]:
-            return False
-        if self.dependents_required != "any" and self.dependents_required != user["has_dependents"]:
-            return False
-        return True
+class TakafulEngine(KnowledgeEngine):
+    def __init__(self):
+        super().__init__()
+        self.recommendations = []
 
-# List of available Takaful plans
-plans = [
-    TakafulPlan("PruBSN AnugerahMax", "medical", max_age=40, min_income=3000),
-    TakafulPlan("PruBSN Medic Plan", "medical", min_age=41, min_income=3000),
-    TakafulPlan("PruBSN Cegah Famili", "critical_illness", min_income=3000),
-    TakafulPlan("PruBSN Lindung Famili", "family_protection", marital_required="married", dependents_required=True),
-    TakafulPlan("PruBSN Cegah Famili", "family_protection", min_income=4000, dependents_required=True),
-    TakafulPlan("PruBSN WarisanGold", "legacy", min_age=35, min_income=5000),
-    TakafulPlan("PruBSN Aspirasi", "savings", min_income=2500),
-    TakafulPlan("PruBSN Aspirasi", "basic_protection", max_age=30, max_income=3000),
-    TakafulPlan("PruBSN DamaiGenZ", "basic_protection", max_age=30, max_income=3000, marital_required="single", dependents_required=False)
-]
+    @Rule(UserInput(goal='medical', age=P(lambda x: x <= 40), income=P(lambda x: x >= 3000)))
+    def medical_young(self):
+        self.recommendations.append("PruBSN AnugerahMax")
 
-# Function to get recommendations (updated to manage its own connection)
+    @Rule(UserInput(goal='medical', age=P(lambda x: x > 40), income=P(lambda x: x >= 3000)))
+    def medical_older(self):
+        self.recommendations.append("PruBSN Medic Plan")
+
+    @Rule(UserInput(goal='critical_illness', income=P(lambda x: x >= 3000)))
+    def critical(self):
+        self.recommendations.append("PruBSN Cegah Famili")
+
+    @Rule(UserInput(goal='family_protection', marital_status='married', has_dependents=True))
+    def married_family(self):
+        self.recommendations.append("PruBSN Lindung Famili")
+
+    @Rule(UserInput(goal='family_protection', income=P(lambda x: x >= 4000), has_dependents=True))
+    def family_income(self):
+        self.recommendations.append("PruBSN Cegah Famili")
+
+    @Rule(UserInput(goal='legacy', age=P(lambda x: x >= 35), income=P(lambda x: x >= 5000)))
+    def legacy(self):
+        self.recommendations.append("PruBSN WarisanGold")
+
+    @Rule(UserInput(goal='savings', income=P(lambda x: x >= 2500)))
+    def savings(self):
+        self.recommendations.append("PruBSN Aspirasi")
+
+    @Rule(UserInput(goal='basic_protection', age=P(lambda x: x <= 30), income=P(lambda x: x <= 3000)))
+    def basic_young(self):
+        self.recommendations.append("PruBSN Aspirasi")
+
+    @Rule(UserInput(goal='basic_protection', age=P(lambda x: x <= 30), income=P(lambda x: x <= 3000), marital_status='single', has_dependents=False))
+    def basic_genz(self):
+        self.recommendations.append("PruBSN DamaiGenZ")
+
+# ======== MAIN RECOMMENDATION FUNCTION ========
 def get_recommendations(username, age, income, marital_status, has_dependents, goal):
-    conn = get_db_connection() # Get a new connection for this operation
+    conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        # Save user input to DB
+        # Save input
         cursor.execute('''
             INSERT INTO user_input (username, age, income, marital_status, has_dependents, goal)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (username, age, income, marital_status, int(has_dependents), goal))
         conn.commit()
 
-        # Fetch latest input for this user
-        cursor.execute('''
-            SELECT age, income, marital_status, has_dependents, goal
-            FROM user_input WHERE username=? ORDER BY id DESC LIMIT 1
-        ''', (username,))
-        row = cursor.fetchone()
+        # Run Experta Engine
+        engine = TakafulEngine()
+        engine.reset()
+        engine.declare(UserInput(
+            age=age,
+            income=income,
+            marital_status=marital_status,
+            has_dependents=has_dependents,
+            goal=goal
+        ))
+        engine.run()
+        return engine.recommendations
 
-        if row:
-            latest_user = {
-                "age": row[0],
-                "income": row[1],
-                "marital_status": row[2],
-                "has_dependents": bool(row[3]),
-                "goal": row[4]
-            }
-            # Match plans
-            matched = [plan.name for plan in plans if plan.is_match(latest_user)]
-            return matched
-        return []
     finally:
-        conn.close() # Always close the connection
-
-#simulate_flow()
-#conn.close()
+        conn.close()
