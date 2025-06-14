@@ -9,6 +9,7 @@
       background-color: #eef6ff;
       padding: 40px;
       text-align: center;
+      margin: 0;
     }
 
     .container {
@@ -70,74 +71,95 @@
     .back-button:hover {
       background-color: #5a6268;
     }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ddd;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    nav a {
+      color: #333;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    nav a.active {
+      color: #0d6efd;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    nav a.logout {
+      color: #dc3545;
+    }
   </style>
 </head>
 <body>
 
-<nav style="
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
-  padding: 12px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Segoe UI', sans-serif;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-">
+<!-- ✅ Updated Navigation Bar -->
+<nav>
   <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
     🧭 SureMatch
   </div>
   <div style="display: flex; gap: 20px; font-size: 15px;">
-    <a href="{{ url_for('package') }}" style="color: #333; text-decoration: none;">🧠 Customized for You</a>
-    <a href="{{ url_for('all_packages') }}" style="color: #333; text-decoration: none;">📦 View All Packages</a>
-    <a href="{{ url_for('agent') }}" style="color: #0d6efd; font-weight: 600; text-decoration: underline;">🧑‍💼 Find Agent</a>
-    <a href="/faq" style="color: #333; text-decoration: none;">❓ FAQs</a>
-    <a href="/support" style="color: #333; text-decoration: none;">💬 Support</a>
+    <a href="{{ url_for('package') }}">🧠 Customized for You</a>
+    <a href="{{ url_for('all_packages') }}">📦 View All Packages</a>
+    <a href="{{ url_for('agent') }}" class="active">🧑‍💼 Find Agent</a>
+    <a href="/faq">❓ FAQs</a>
+    <a href="/support">💬 Support</a>
+    <a href="{{ url_for('home') }}" class="logout">🔓 Log Out</a>
+
   </div>
 </nav>
 
+<div class="container">
+  <h1>📞 Get in Touch with an Agent</h1>
+  <p style="color: #555;">Below are our available agents sorted by region</p>
 
-  <div class="container">
-    <h1>📞 Get in Touch with an Agent</h1>
-    <p style="color: #555;">Below are our available agents sorted by region</p>
-
-    <!-- Sarawak -->
-    <div class="region-title">📍 Sarawak</div>
-    <div class="agent-card">
-      <h3>Ahmad Faizal</h3>
-      <p>📞 +60 12-345 6789</p>
-      <p>📧 <a href="mailto:faizal@takaful.com">faizal@takaful.com</a></p>
-    </div>
-
-    <!-- Johor -->
-    <div class="region-title">📍 Johor</div>
-    <div class="agent-card">
-      <h3>Nur Aina</h3>
-      <p>📞 WhatsApp +60 12-987 6543</p>
-      <p>📧 <a href="mailto:aina@takaful.com">aina@takaful.com</a></p>
-    </div>
-
-    <!-- Selangor -->
-    <div class="region-title">📍 Selangor</div>
-    <div class="agent-card">
-      <h3>Syafiq Zain</h3>
-      <p>📞 +60 17-222 3344</p>
-      <p>📧 <a href="mailto:syafiq@takaful.com">syafiq@takaful.com</a></p>
-    </div>
-
-    <!-- Sabah -->
-    <div class="region-title">📍 Sabah</div>
-    <div class="agent-card">
-      <h3>Farah Lim</h3>
-      <p>📞 +60 19-888 1122</p>
-      <p>📧 <a href="mailto:farah@takaful.com">farah@takaful.com</a></p>
-    </div>
-
-    <a href="{{ url_for('package') }}" class="back-button">⬅ Back </a>
+  <!-- Sarawak -->
+  <div class="region-title">📍 Sarawak</div>
+  <div class="agent-card">
+    <h3>Ahmad Faizal</h3>
+    <p>📞 +60 12-345 6789</p>
+    <p>📧 <a href="mailto:faizal@takaful.com">faizal@takaful.com</a></p>
   </div>
+
+  <!-- Johor -->
+  <div class="region-title">📍 Johor</div>
+  <div class="agent-card">
+    <h3>Nur Aina</h3>
+    <p>📞 WhatsApp +60 12-987 6543</p>
+    <p>📧 <a href="mailto:aina@takaful.com">aina@takaful.com</a></p>
+  </div>
+
+  <!-- Selangor -->
+  <div class="region-title">📍 Selangor</div>
+  <div class="agent-card">
+    <h3>Syafiq Zain</h3>
+    <p>📞 +60 17-222 3344</p>
+    <p>📧 <a href="mailto:syafiq@takaful.com">syafiq@takaful.com</a></p>
+  </div>
+
+  <!-- Sabah -->
+  <div class="region-title">📍 Sabah</div>
+  <div class="agent-card">
+    <h3>Farah Lim</h3>
+    <p>📞 +60 19-888 1122</p>
+    <p>📧 <a href="mailto:farah@takaful.com">farah@takaful.com</a></p>
+  </div>
+
+  <a href="{{ url_for('package') }}" class="back-button">⬅ Back</a>
+</div>
+
 </body>
 </html>
 
