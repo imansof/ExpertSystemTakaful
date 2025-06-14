@@ -63,7 +63,7 @@ def package():
 
         recommended_plans = get_recommendations(username, age, income, marital_status, has_dependents, goal)
         # Pass recommendations to the template
-        return render_template('package.html', recommendations=recommended_plans)
+        return render_template('Recommend_Page.html', recommendations=recommended_plans)
 
     # For GET requests (initial load of the page or after login)
     return render_template('package.html', recommendations=None) # Pass None initially
