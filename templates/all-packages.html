@@ -81,12 +81,14 @@
 
 <nav>
   <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">🧭 Takaful Advisor</div>
-  <div>
+  <div style="display: flex; gap: 20px;">
     <a href="{{ url_for('package') }}">🧠 Customized for You</a>
     <a href="{{ url_for('all_packages') }}" class="active">📦 View All Packages</a>
     <a href="{{ url_for('agent') }}">🧑‍💼 Find Agent</a>
     <a href="/faq">❓ FAQs</a>
     <a href="/support">💬 Support</a>
+    <a href="{{ url_for('home') }}" class="logout">🔓 Log Out</a>
+
   </div>
 </nav>
 
