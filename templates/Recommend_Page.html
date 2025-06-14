@@ -31,6 +31,27 @@
             border-radius: 6px;
             color: #333;
         }
+        .recommendation-explaination { /* Style for recommended plans */
+            margin-top: 20px;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .recommendation-explaination h3 {
+            color: #0d6efd;
+        }
+        .recommendation-explaination ul {
+            list-style: none;
+            padding: 0;
+        }
+        .recommendation-explaination li {
+            background-color: #f0f9ff;
+            border: 1px solid #cceeff;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -45,8 +66,26 @@
         </div>
       {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
         <div class="recommendation-list">
+            <h3>✨ Recommended Plan(s) for You:</h3>
           <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
         </div>
       {% endif %}
+
+{% if recommendations %}
+        <div class="recommendation-explaination">
+          <h3> Here’s Why This Plan Works ✅🛠️ </h3>
+          <ul>
+            {% for plan in recommendations %}
+              <li>{{ plan }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
+        <div class="recommendation-list">
+            <h3> Here’s Why This Plan Works ✅🛠️ </h3>
+          <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
+        </div>
+      {% endif %}
+
 </body>
 </html>

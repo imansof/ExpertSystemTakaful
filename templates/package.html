@@ -51,27 +51,6 @@
     .cta-button:hover {
       background-color: #084298;
     }
-    .recommendation-list { /* Style for recommended plans */
-      margin-top: 20px;
-      text-align: left;
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-    }
-    .recommendation-list h3 {
-      color: #0d6efd;
-    }
-    .recommendation-list ul {
-      list-style: none;
-      padding: 0;
-    }
-    .recommendation-list li {
-      background-color: #f0f9ff;
-      border: 1px solid #cceeff;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      color: #333;
-    }
   </style>
 </head>
 
@@ -135,22 +114,6 @@
           <button type="submit" class="cta-button">📥 View Recommended Package</button>
         </div>
       </form>
-
-      {% if recommendations %}
-        <div class="recommendation-list">
-          <h3>✨ Recommended Plan(s) for You:</h3>
-          <ul>
-            {% for plan in recommendations %}
-              <li>{{ plan }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
-        <div class="recommendation-list">
-          <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
-        </div>
-      {% endif %}
-
     </div>
 
     <script>
