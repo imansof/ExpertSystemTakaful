@@ -2,27 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Insurance Package Details</title>
+  <title>{{ plan_name }} - Package Details</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
+    <nav style="position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #ddd; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-family: 'Segoe UI', sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+      <div style="font-weight: 600; font-size: 18px; color: #0d6efd;">
+        🧭 SureMatch
+      </div>
+      <div style="display: flex; gap: 20px; font-size: 15px;">
+        <a href="{{ url_for('package') }}" style="color: #0d6efd; text-decoration: underline; font-weight: 500;">🧠 Customized for You</a>
+        <a href="/all-packages" style="color: #333; text-decoration: none;">📦 View All Packages</a>
+        <a href="{{ url_for('agent') }}" style="color: #333; text-decoration: none;">🧑‍💼 Find Agent</a>
+        <a href="/faq" style="color: #333; text-decoration: none;">❓ FAQs</a>
+        <a href="/support" style="color: #333; text-decoration: none;">💬 Support</a>
+        <a href="{{ url_for('home') }}" class="logout">🔓 Log Out</a>
+      </div>
+    </nav>
+
 <body class="bg-gray-100 p-6">
   <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-6">
 
     <!-- Header -->
     <div class="text-center">
-      <h1 class="text-2xl font-bold text-blue-700">📦 PruBSN Plan</h1>
+      <h1 class="text-2xl font-bold text-blue-700">📦 {{ plan_name }}</h1>
       <p class="text-gray-600 text-sm">Provided by PruBSN Takaful</p>
     </div>
 
-    <!-- Target Group -->
+    <!-- Target Group (Optional) -->
+    {% if plan.target_group %}
     <div class="bg-blue-50 p-4 rounded-lg">
       <h2 class="text-blue-800 font-semibold mb-2">🎯 Target Group</h2>
       <ul class="list-disc list-inside text-gray-700">
-        <li>Income: RM3,000 – RM6,000</li>
-        <li>Age: 25 – 40</li>
-        <li>Dependents: 1 – 3</li>
+        {% for key, value in plan.target_group.items() %}
+          <li>{{ key.capitalize() }}: {{ value }}</li>
+        {% endfor %}
       </ul>
     </div>
+    {% endif %}
 
     <!-- Coverage Breakdown -->
     <div>
@@ -30,49 +47,57 @@
       <table class="w-full table-auto border-collapse border border-gray-300 text-sm">
         <thead class="bg-blue-200 text-blue-900">
           <tr>
-            <th class="border px-4 py-2 text-left">Coverage</th>
+            <th class="border px-4 py-2 text-left">Field</th>
             <th class="border px-4 py-2 text-left">Details</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="bg-white">
-            <td class="border px-4 py-2">🏥 Medical</td>
-            <td class="border px-4 py-2">Up to RM100,000/year</td>
-          </tr>
-          <tr class="bg-gray-50">
-            <td class="border px-4 py-2">💰 Savings</td>
-            <td class="border px-4 py-2">RM500/month savings plan</td>
-          </tr>
-          <tr class="bg-white">
-            <td class="border px-4 py-2">⚰️ Death Benefit</td>
-            <td class="border px-4 py-2">RM50,000</td>
-          </tr>
+          <tr class="bg-white"><td class="border px-4 py-2">Coverage Term</td><td class="border px-4 py-2">{{ plan.coverage_term }}</td></tr>
+          <tr class="bg-gray-50"><td class="border px-4 py-2">Contribution Term</td><td class="border px-4 py-2">{{ plan.contribution_term }}</td></tr>
+          <tr class="bg-white"><td class="border px-4 py-2">Entry Age</td><td class="border px-4 py-2">{{ plan.entry_age }}</td></tr>
+          <tr class="bg-gray-50"><td class="border px-4 py-2">Expiry Age</td><td class="border px-4 py-2">{{ plan.expiry_age }}</td></tr>
+          <tr class="bg-white"><td class="border px-4 py-2">Minimum Monthly Contribution</td><td class="border px-4 py-2">{{ plan.min_monthly_contribution }}</td></tr>
+          <tr class="bg-gray-50"><td class="border px-4 py-2">Minimum Sum Covered</td><td class="border px-4 py-2">{{ plan.min_sum_covered }}</td></tr>
+          <tr class="bg-white"><td class="border px-4 py-2">Gender</td><td class="border px-4 py-2">{{ plan.gender }}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Video -->
+    <!-- Goals -->
+    {% if plan.goal %}
     <div>
-      <h2 class="text-blue-800 font-semibold mb-2">🎥 Learn More</h2>
-      <div class="aspect-w-16 aspect-h-9">
-        <iframe class="w-full h-64 rounded-lg" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
-      </div>
+      <h2 class="text-blue-800 font-semibold mb-2">🎯 Goals</h2>
+      <ul class="list-disc list-inside text-gray-700">
+        {% for g in plan.goal %}
+          <li>{{ g.replace("_", " ").title() }}</li>
+        {% endfor %}
+      </ul>
     </div>
+    {% endif %}
 
-    <!-- Buttons -->
-    <div class="flex flex-wrap justify-between gap-4 mt-6">
-      <a href="/agent-contact?state=selangor" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
-        📞 Contact Agent
-      </a>
-      <div class="flex gap-4">
-        <a href="/advice" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
-          🔙 Back to Advice
-        </a>
-        <a href="/all-packages" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-          📦 View All Packages
-        </a>
-      </div>
+    <!-- Benefits -->
+    {% if plan.benefits %}
+    <div>
+      <h2 class="text-green-700 font-semibold mb-2">✅ Basic Benefits</h2>
+      <ul class="list-disc list-inside text-gray-700">
+        {% for benefit in plan.benefits %}
+          <li>{{ benefit }}</li>
+        {% endfor %}
+      </ul>
     </div>
+    {% endif %}
+
+    <!-- Riders -->
+    {% if plan.riders %}
+    <div>
+      <h2 class="text-purple-700 font-semibold mb-2">🧩 Optional Riders</h2>
+      <ul class="list-disc list-inside text-gray-700">
+        {% for rider in plan.riders %}
+          <li>{{ rider }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
 
   </div>
 </body>

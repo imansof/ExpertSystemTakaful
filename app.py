@@ -85,6 +85,15 @@ def faq():
 def support():
     return render_template('support.html')
 
+@app.route("/details/<plan_name>")
+def show_plan_details(plan_name):
+    from knowledge_base import plans
+
+    if plan_name not in plans:
+        return "Plan not found", 404
+
+    return render_template("package_details.html", plan_name=plan_name, plan=plans[plan_name])
+
 
 if __name__ == '__main__':
     app.run(debug=True)

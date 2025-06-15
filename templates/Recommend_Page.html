@@ -1,91 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Recommend Page</title>
-    <style>
-        body{
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #eef6ff;
-            margin: 0;
-            padding: 20px;
-        }
-        .recommendation-list { /* Style for recommended plans */
-            margin-top: 20px;
-            text-align: left;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .recommendation-list h3 {
-            color: #0d6efd;
-        }
-        .recommendation-list ul {
-            list-style: none;
-            padding: 0;
-        }
-        .recommendation-list li {
-            background-color: #f0f9ff;
-            border: 1px solid #cceeff;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            color: #333;
-        }
-        .recommendation-explaination { /* Style for recommended plans */
-            margin-top: 20px;
-            text-align: left;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .recommendation-explaination h3 {
-            color: #0d6efd;
-        }
-        .recommendation-explaination ul {
-            list-style: none;
-            padding: 0;
-        }
-        .recommendation-explaination li {
-            background-color: #f0f9ff;
-            border: 1px solid #cceeff;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Recommended Plans</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-{% if recommendations %}
-        <div class="recommendation-list">
-          <h3>✨ Recommended Plan(s) for You:</h3>
-          <ul>
-            {% for plan in recommendations %}
-              <li>{{ plan }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
-        <div class="recommendation-list">
-            <h3>✨ Recommended Plan(s) for You:</h3>
-          <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
-        </div>
-      {% endif %}
+<body class="bg-blue-50 font-sans min-h-screen">
 
-{% if recommendations %}
-        <div class="recommendation-explaination">
-          <h3> Here’s Why This Plan Works ✅🛠️ </h3>
-          <ul>
-            {% for plan in recommendations %}
-              <li>{{ plan }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% elif recommendations is not none %} {# Check if recommendations is an empty list, not just None #}
-        <div class="recommendation-list">
-            <h3> Here’s Why This Plan Works ✅🛠️ </h3>
-          <p>No exact match found based on your criteria. Our general recommendation is **PruBSN Asas360** with suitable riders. Please consider contacting an agent for personalized advice.</p>
-        </div>
-      {% endif %}
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50 p-4 flex justify-between items-center">
+    <div class="text-xl font-bold text-blue-600">🧭 SureMatch</div>
+    <div class="space-x-6 text-sm">
+      <a href="{{ url_for('package') }}" class="text-blue-600 font-semibold underline">🧠 Customized for You</a>
+      <a href="/all-packages" class="text-gray-700 hover:text-blue-600">📦 View All Packages</a>
+      <a href="{{ url_for('agent') }}" class="text-gray-700 hover:text-blue-600">🧑‍💼 Find Agent</a>
+      <a href="/faq" class="text-gray-700 hover:text-blue-600">❓ FAQs</a>
+      <a href="/support" class="text-gray-700 hover:text-blue-600">💬 Support</a>
+      <a href="{{ url_for('home') }}" class="text-red-500 hover:underline">🔓 Log Out</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto mt-10 space-y-10 px-4">
+
+    {% if recommendations %}
+    <!-- Recommended Plans Section -->
+    <section class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">✨ Recommended Plan(s) for You</h2>
+      <ul class="space-y-4">
+        {% for plan in recommendations %}
+        <li class="bg-blue-100 p-4 rounded-md hover:bg-blue-200 transition">
+          <a href="{{ url_for('show_plan_details', plan_name=plan) }}" class="text-blue-800 font-semibold hover:underline">
+            {{ plan }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Explanation Section -->
+    <section class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">✅ Why These Plans Fit You</h2>
+      <ul class="list-disc list-inside text-gray-700 space-y-2">
+        {% for plan in recommendations %}
+        <li><span class="font-semibold text-blue-700">{{ plan }}</span> fits your preferences on protection type, financial goal, and budget range.</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% elif recommendations is not none %}
+    <!-- Fallback Plan Message -->
+    <section class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">✨ Recommended Plan(s) for You</h2>
+      <p class="text-gray-700">No exact match found based on your criteria. Our general recommendation is <strong>PruBSN Asas360</strong> with suitable riders.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">✅ Why This Plan Works</h2>
+      <p class="text-gray-700"><strong>PruBSN Asas360</strong> provides flexible and foundational protection suitable for most users. Consider contacting an agent for a tailored solution.</p>
+    </section>
+    {% endif %}
+
+  </main>
 
 </body>
 </html>

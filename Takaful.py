@@ -69,6 +69,15 @@ class TakafulEngine(KnowledgeEngine):
     def __init__(self):
         super().__init__()
         self.recommendations = []
+        self.rejection_reasons = {}
+
+    def log_rejection(self, plan, reason):
+        if plan not in self.rejection_reasons:
+            self.rejection_reasons[plan] = []
+        self.rejection_reasons[plan].append(reason)
+
+    def get_rejection_reasons(self):
+        return self.rejection_reasons
 
     @Rule(UserInput(goal='medical', age=P(lambda x: x <= 40), income=P(lambda x: x >= 3000)))
     def medical_young(self):
