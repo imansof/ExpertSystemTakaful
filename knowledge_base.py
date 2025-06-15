@@ -1,3 +1,72 @@
+# ======== CATEGORY DEFINITIONS ========
+# High-level goal categories used for user selection
+GOAL_CATEGORIES = [
+    'basic_protection', 'family_protection', 'medical_coverage',
+    'critical_illness', 'cancer_coverage', 'female_protection',
+    'mental_care', 'investment', 'charity', 'education', 'funeral_cover'
+]
+
+# ======== MAPPINGS ========
+# Map raw benefit strings to direct goal categories
+BENEFIT_TO_GOALS = {
+    'Maturity Benefit': ['basic_protection', 'investment'],
+    'Death Benefit': ['basic_protection', 'family_protection'],
+    'Total and Permanent Disability (TPD) Benefit': ['basic_protection', 'family_protection'],
+    'Accidental Death Benefit (Up to 500%)': ['basic_protection', 'family_protection'],
+    'Diagnosis of Cancer': ['cancer_coverage'],
+    'Room & Board Benefit: Hospital Daily Room & Board Benefit': ['medical_coverage'],
+    'Hospital & Surgical Benefits: Intensive Care Unit/Cardiac Care Unit Benefit, In-Hospital & Related Services Benefit': ['medical_coverage'],
+    'Outpatient Treatment Benefits: Pre-Hospitalisation Treatment Benefit, Post-Hospitalisation Treatment Benefit, Day Surgery Benefit': ['medical_coverage'],
+    'Emergency Treatment for Accidental Injury Benefit': ['medical_coverage'],
+    'Government Hospital Daily Cash Benefit': ['medical_coverage'],
+    'Outpatient Cancer Treatment Benefit': ['cancer_coverage'],
+    'Outpatient Kidney Dialysis Treatment Benefit': ['medical_coverage'],
+    'EduAchieve Bonus': ['education'],
+    'Kasih Bonus': ['charity'],
+    # Anggun-specific
+    'Female Illness Benefit': ['female_protection'],
+    'Female Care Benefit': ['female_protection'],
+    'Mental Care Benefit': ['mental_care'],
+    'Life Stage Benefit': ['basic_protection'],
+    # Gadai Janji
+    'Compassionate Benefit: RM2,000 upon your death': ['funeral_cover'],
+    'RM1,000 upon death of your spouse': ['funeral_cover'],
+    'RM500 upon death of your children (maximum 2 children below age 20)': ['funeral_cover'],
+    'RM1,000 medical expenses if you suffer Total and Permanent Disability (TPD)': ['medical_coverage'],
+    # Aspirasi
+    'Annual Cash Payout': ['investment']
+}
+
+# Map raw rider strings to indirect goal categories
+RIDER_TO_GOALS = {
+    'Cancer Protector': ['cancer_coverage', 'critical_illness'],
+    'Accidental Protector Plus': ['basic_protection'],
+    'Accidental Medical Protector': ['medical_coverage'],
+    'Income Protector': ['basic_protection'],
+    'Parent Term': ['family_protection'],
+    'Contributor Protect': ['basic_protection'],
+    'Contributor Saver': ['investment'],
+    'Contributor Parent Protect': ['family_protection'],
+    'Contributor Parent Saver': ['investment'],
+    'Contributor Spouse Protect': ['family_protection'],
+    'Contributor Spouse Saver': ['investment'],
+    'Crisis Shield': ['family_protection'],
+    'Crisis Protector': ['family_protection'],
+    'Crisis TotalCare': ['basic_protection'],
+    'Medic TotalCare': ['medical_coverage'],
+    'Medik Asas': ['medical_coverage'],
+    'Baby TotalCare': ['family_protection'],
+    'Vital Care Plus': ['medical_coverage'],
+    'Health Protector': ['medical_coverage'],
+    'Takaful Saver': ['investment'],
+    'Takaful Saver Kid': ['education'],
+    'Takaful Saver Impian': ['investment'],
+    'Ihsan': ['charity'],
+    'Mom Care': ['female_protection'],
+    'Hajj Protection': ['charity']
+}
+
+# ======== TakafulPlan Class ========
 class TakafulPlan:
     def __init__(self, name, coverage_term, contribution_term, entry_age, expiry_age,
                  min_monthly_contribution, min_sum_covered, gender, benefits, riders, goal,
@@ -13,7 +82,23 @@ class TakafulPlan:
         self.benefits = benefits
         self.riders = riders
         self.target_group = target_group or {}
-        self.goal = goal
+        # original broad goals (proposal-level)
+        self.proposal_goals = goal
+        # compute direct and indirect categories
+        self.direct_goals = self._compute_direct_goals()
+        self.indirect_goals = self._compute_indirect_goals()
+
+    def _compute_direct_goals(self):
+        dg = set()
+        for b in self.benefits:
+            dg.update(BENEFIT_TO_GOALS.get(b, []))
+        return list(dg)
+
+    def _compute_indirect_goals(self):
+        ig = set()
+        for r in self.riders:
+            ig.update(RIDER_TO_GOALS.get(r, []))
+        return list(ig)
 
 # Plan Frame
 anugerah_max = TakafulPlan(
@@ -331,18 +416,19 @@ medic_plan = TakafulPlan(
     goal = ["medical"]
 )
 
-plans = {
-    "PruBSN AnugerahMax": anugerah_max,
-    "PruBSN WarisanGold": warisan_gold,
-    "PruBSN Cegah Famili (EPF)": cegah_famili_epf,
-    "PruBSN Lindung Famili (EPF)": lindung_famili_epf,
-    "PruBSN Asas360": asas360,
-    "PruBSN DamaiGenZ": damaigenz,
-    "PruBSN Damai": damai,
-    "PruBSN Anggun": anggun,
-    "PruBSN Lindungi": lindungi,
-    "Cancer Plan": cancer_plan,
-    "PruBSN Gadai Janji": gadai_janji,
-    "PruBSN Aspirasi": aspirasi,
-    "Medic Plan": medic_plan
-}
+from collections import OrderedDict
+plans = OrderedDict([
+    ("PruBSN AnugerahMax", anugerah_max),
+    ("PruBSN WarisanGold", warisan_gold),
+    ("PruBSN Cegah Famili (EPF)", cegah_famili_epf),
+    ("PruBSN Lindung Famili (EPF)", lindung_famili_epf),
+    ("PruBSN Asas360", asas360),
+    ("PruBSN DamaiGenZ", damaigenz),
+    ("PruBSN Damai", damai),
+    ("PruBSN Anggun", anggun),
+    ("PruBSN Lindungi", lindungi),
+    ("Cancer Plan", cancer_plan),
+    ("PruBSN Gadai Janji", gadai_janji),
+    ("PruBSN Aspirasi", aspirasi),
+    ("Medic Plan", medic_plan)
+])
