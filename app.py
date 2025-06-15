@@ -115,9 +115,10 @@ def package():
 def agent():
     return render_template('agent.html')
 
-@app.route('/all-packages')
+from knowledge_base import plans
+@app.route("/all-packages")
 def all_packages():
-    return render_template('all-packages.html')
+    return render_template("all-packages.html", plans=plans)
 
 @app.route('/faq')
 def faq():

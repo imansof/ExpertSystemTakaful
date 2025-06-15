@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="098e7a3f-0014-42dd-b1b9-27c5021d1338" name="Changes" comment="recommend button to new recommend page">
+    <list default="true" id="098e7a3f-0014-42dd-b1b9-27c5021d1338" name="Changes" comment="better goals choices and recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Takaful.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takaful.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowledge_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/takaful_users.db" beforeDir="false" afterPath="$PROJECT_DIR$/takaful_users.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Recommend_Page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Recommend_Page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/package.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/package.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/all-packages.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/all-packages.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749926830228</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="better goals choices and recommendations">
+      <option name="closed" value="true" />
+      <created>1749984005593</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749984005594</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,7 +195,8 @@
     <MESSAGE value="First try" />
     <MESSAGE value="ui first" />
     <MESSAGE value="recommend button to new recommend page" />
-    <option name="LAST_COMMIT_MESSAGE" value="recommend button to new recommend page" />
+    <MESSAGE value="better goals choices and recommendations" />
+    <option name="LAST_COMMIT_MESSAGE" value="better goals choices and recommendations" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ExpertSystemTakaful$app.coverage" NAME="app Coverage Results" MODIFIED="1749983536538" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

@@ -99,102 +99,27 @@
 <div class="container">
   <h1>📦 All Available Takaful Packages</h1>
   <div class="package-grid">
-
-    <!-- Package: PruBSN AnugerahMax -->
+    {% for name, pkg in plans.items() %}
     <div class="package-card">
-      <h3>PruBSN AnugerahMax</h3>
-      <p><strong>Coverage Term:</strong> 5, 10, 20 years or until age 70, 80, 90, 100</p>
-      <p><strong>Contribution Term:</strong> Throughout coverage term</p>
-      <p><strong>Entry Age:</strong> 1–70</p>
-      <p><strong>Expiry Age:</strong> 100</p>
-      <p><strong>Min Contribution:</strong> RM50/month</p>
-      <p><strong>Min Sum Covered:</strong> RM10,000</p>
-      <p><strong>Benefits:</strong> Maturity, Death, TPD</p>
-    </div>
+      <h3>{{ name }}</h3>
+      {% if pkg.coverage_term %}<p><strong>Coverage Term:</strong> {{ pkg.coverage_term }}</p>{% endif %}
+      {% if pkg.contribution_term %}<p><strong>Contribution Term:</strong> {{ pkg.contribution_term }}</p>{% endif %}
+      {% if pkg.entry_age %}<p><strong>Entry Age:</strong> {{ pkg.entry_age }}</p>{% endif %}
+      {% if pkg.expiry_age %}<p><strong>Expiry Age:</strong> {{ pkg.expiry_age }}</p>{% endif %}
+      {% if pkg.min_monthly_contribution %}<p><strong>Min Contribution:</strong> {{ pkg.min_monthly_contribution }}</p>{% endif %}
+      {% if pkg.min_sum_covered %}<p><strong>Min Sum Covered:</strong> {{ pkg.min_sum_covered }}</p>{% endif %}
 
-    <!-- Package: PruBSN WarisanGold -->
-    <div class="package-card">
-      <h3>PruBSN WarisanGold</h3>
-      <p><strong>Coverage Term:</strong> 20 years or till age 70–100</p>
-      <p><strong>Contribution Term:</strong> 5, 10, 20 or full term</p>
-      <p><strong>Entry Age:</strong> 14 days–70</p>
-      <p><strong>Expiry Age:</strong> 100</p>
-      <p><strong>Min Contribution:</strong> RM100 (adult), RM50 (child)</p>
-      <p><strong>Min Sum Covered:</strong> RM350k (adult), RM250k (child)</p>
-      <p><strong>Benefits:</strong> Maturity, Death, TPD</p>
-    </div>
+      {% if pkg.benefits %}
+        <p><strong>Benefits:</strong> {{ pkg.benefits | join(', ') }}</p>
+      {% endif %}
 
-    <!-- Package: PruBSN Asas360 -->
-    <div class="package-card">
-      <h3>PruBSN Asas360</h3>
-      <p><strong>Coverage Term:</strong> 20 years or up to age 100</p>
-      <p><strong>Contribution Term:</strong> Up to age 100</p>
-      <p><strong>Entry Age:</strong> 13 weeks–15 years</p>
-      <p><strong>Min Sum Covered:</strong> RM25,000</p>
-      <p><strong>Benefits:</strong> Death, TPD</p>
+      {% if pkg.riders %}
+        <p><strong>Optional Riders:</strong> {{ pkg.riders | join(', ') }}</p>
+      {% endif %}
     </div>
-
-    <!-- Package: PruBSN Anggun -->
-    <div class="package-card">
-      <h3>PruBSN Anggun</h3>
-      <p><strong>Coverage Term:</strong> 15, 20, 25 or 30 years</p>
-      <p><strong>Contribution Term:</strong> 5, 10 or 20 years</p>
-      <p><strong>Entry Age:</strong> 1–70</p>
-      <p><strong>Min Sum Covered:</strong> RM15,000</p>
-      <p><strong>Benefits:</strong> Maturity, Death, TPD, Annual Payout</p>
-    </div>
-
-    <!-- Package: Lindungi -->
-    <div class="package-card">
-      <h3>PruBSN Lindungi</h3>
-      <p><strong>Coverage Term:</strong> N/A</p>
-      <p><strong>Contribution Term:</strong> N/A</p>
-      <p><strong>Entry Age:</strong> N/A</p>
-      <p><strong>Min Contribution:</strong> RM50–100</p>
-      <p><strong>Benefits:</strong> Death, TPD, Maturity</p>
-    </div>
-
-    <!-- Package: Cancer Plan -->
-    <div class="package-card">
-      <h3>Cancer Plan</h3>
-      <p><strong>Coverage Term:</strong> 10, 20 years</p>
-      <p><strong>Entry Age:</strong> 1–65</p>
-      <p><strong>Sum Covered:</strong> RM50,000–RM500,000</p>
-      <p><strong>Benefits:</strong> Early Stage, Advanced Cancer, Recurrence</p>
-    </div>
-
-    <!-- Package: PruBSN Gadai Janji -->
-    <div class="package-card">
-      <h3>PruBSN Gadai Janji</h3>
-      <p><strong>Coverage Term:</strong> 5–33 years</p>
-      <p><strong>Contribution Term:</strong> 5, 10, 20 years or full term</p>
-      <p><strong>Entry Age:</strong> 19–70</p>
-      <p><strong>Contribution:</strong> Single</p>
-      <p><strong>Sum Covered:</strong> RM5,000</p>
-      <p><strong>Benefits:</strong> Death, TPD, Compassionate, Medical</p>
-    </div>
-
-    <!-- Package: PruBSN Aspirasi -->
-    <div class="package-card">
-      <h3>PruBSN Aspirasi</h3>
-      <p><strong>Coverage Term:</strong> 15, 20, 25, or 30 years</p>
-      <p><strong>Contribution Term:</strong> 5, 10, or 20 years</p>
-      <p><strong>Entry Age:</strong> 1–70</p>
-      <p><strong>Sum Covered:</strong> RM15,000</p>
-      <p><strong>Benefits:</strong> Maturity, Death, TPD, Annual Payout</p>
-    </div>
-
-    <!-- Package: Medic Plan -->
-    <div class="package-card">
-      <h3>Medic Plan</h3>
-      <p><strong>Coverage Term:</strong> Yearly renewable to age 70</p>
-      <p><strong>Contribution Term:</strong> Full coverage term</p>
-      <p><strong>Entry Age:</strong> 19–45</p>
-      <p><strong>Min Contribution:</strong> RM0.96/day</p>
-      <p><strong>Benefits:</strong> Room & Board, Surgical, Outpatient, Cancer, Dialysis</p>
-    </div>
-
+    {% endfor %}
   </div>
+
 </div>
 
 </body>
