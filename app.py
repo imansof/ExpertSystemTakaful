@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from Takaful import signup as takaful_signup, login as takaful_login, get_recommendations
 from Takaful import PLAN_SIGNATURES
+import os
 
 app = Flask(__name__)
 # Set your SECRET_KEY here:
@@ -135,5 +136,8 @@ def show_plan_details(plan_name):
         return "Plan not found", 404
     return render_template('package_details.html', plan_name=plan_name, plan=plans[plan_name])
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # default to 10000 if PORT is not set
+    app.run(host="0.0.0.0", port=port)
+
