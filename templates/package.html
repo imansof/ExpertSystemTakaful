@@ -50,6 +50,10 @@
 
       <div class="chat-bubble bot">📅 Your age is:</div>
       <input type="number" name="age" class="input-field" id="age" readonly required>
+      <p id="age-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
+        (If you’re buying for a child, enter their date of birth here; then provide your own income, marital status, and dependents.)
+      </p>
+
 
       <div class="chat-bubble bot">🚻 What is your gender?</div>
       <select name="gender" class="input-field" required>
@@ -99,16 +103,29 @@
   </div>
 
   <script>
+    const educationKey = 'education';  // normalize key from goals_choices
+
     function updateAge() {
       const dobInput = document.getElementById("dob").value;
       const dob = new Date(dobInput);
       const today = new Date();
       let age = today.getFullYear() - dob.getFullYear();
       const m = today.getMonth() - dob.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-        age--;
-      }
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
       document.getElementById("age").value = age;
+      toggleEducationCheckbox(age);
+    }
+
+    function toggleEducationCheckbox(age) {
+      // find the education checkbox by its value attribute
+      const inputs = document.querySelectorAll('input[type=checkbox][name=goals]');
+      inputs.forEach(cb => {
+        if (cb.value === educationKey) {
+          cb.disabled = age > 18;
+          // uncheck if disabled
+          if (cb.disabled) cb.checked = false;
+        }
+      });
     }
   </script>
 

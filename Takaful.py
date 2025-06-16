@@ -1,6 +1,7 @@
 from experta import *
 import sqlite3
-from knowledge_base import plans
+import re
+from knowledge_base import plans as all_plans
 
 # ======== DATABASE CONNECTION ========
 def get_db_connection():
@@ -57,7 +58,7 @@ def build_plan_signatures():
         it can satisfy (directly via benefits, indirectly via riders).
         """
     sigs = {}
-    for name, plan in plans.items():
+    for name, plan in all_plans.items():
         # plan.direct_goals and plan.indirect_goals are lists of keys like 'cancer_coverage'
         sigs[name] = set(plan.direct_goals + plan.indirect_goals)
     return sigs
@@ -140,20 +141,42 @@ def get_recommendations(username, age, income, gender,
     user_goals = set(goals)
 
     # 3. Score each plan by how many selected goals it satisfies
-    scored = []
-    from knowledge_base import plans as all_plans
+    raw_scores = []
     for plan_name, plan in all_plans.items():
-        # Combine direct_goals + indirect_goals
+        # count how many of the user’s goals this plan can satisfy
         plan_goals = set(plan.direct_goals + plan.indirect_goals)
         match_count = len(user_goals & plan_goals)
-        if match_count > 0:
-            scored.append((plan_name, match_count))
+        if match_count:
+            raw_scores.append((plan_name, match_count))
 
-    # 4. Sort descending by number of matches
-    scored.sort(key=lambda x: x[1], reverse=True)
+    # 4. Filter out plans the user can’t have or afford
+    filtered = []
+    for plan_name, match_count in raw_scores:
+        plan = all_plans[plan_name]
 
-    # 5. Return the scored list
+        # age eligibility
+        min_age, max_age = plan.age_range
+        if not (min_age <= age <= max_age):
+            continue
+
+        # affordability (use 5% of income as threshold)
+        if plan.min_contribution_value > 0.05 * income:
+            continue
+
+        filtered.append((plan_name, match_count))
+
+    # 5. If nothing left, fallback to default
+    if not filtered:
+        return {'plans': [], 'rejections': {}}
+
+    # 6. Pick only those with the highest match_count
+    best_count = max(cnt for _, cnt in filtered)
+    best_plans = [(p, c) for (p, c) in filtered if c == best_count]
+
+    # 7. Limit to top‑2
+    best_plans = best_plans[:2]
+
     return {
-        'plans': scored,
-        'rejections': {}  # you can fill this if you implement rejection logging
+        'plans': best_plans,
+        'rejections': {}
     }

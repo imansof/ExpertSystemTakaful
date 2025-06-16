@@ -88,6 +88,16 @@ class TakafulPlan:
         self.direct_goals = self._compute_direct_goals()
         self.indirect_goals = self._compute_indirect_goals()
 
+        # --- NEW ATTRIBUTES FOR ELIGIBILITY & FILTERING ---
+        # parse numeric entry-age range, e.g. "14 days -70" → (14,70)
+        self.age_range = self._parse_age_range(self.entry_age)
+        # parse minimum contribution value (RM)
+        self.min_contribution_value = self._parse_contribution(self.min_monthly_contribution)
+        # child-friendly if entry_age mentions days or min age == 0
+        self.child_friendly = 'day' in self.entry_age.lower() or self.age_range[0] == 0
+        # only AnugerahMax has EduAchieve Bonus for schoolgoers (1–18)
+        self.education_age_range = (1, 18) if 'EduAchieve Bonus' in self.benefits else None
+
     def _compute_direct_goals(self):
         dg = set()
         for b in self.benefits:
@@ -99,6 +109,19 @@ class TakafulPlan:
         for r in self.riders:
             ig.update(RIDER_TO_GOALS.get(r, []))
         return list(ig)
+
+    def _parse_age_range(self, text):
+        import re
+        nums = [int(n) for n in re.findall(r'\d+', text)]
+        if nums:
+            return (min(nums), max(nums))
+        return (0, 200)
+
+    def _parse_contribution(self, text):
+        import re
+        # finds first decimal or integer in the string
+        m = re.search(r'(\d+\.?\d*)', text.replace(',', ''))
+        return float(m.group(1)) if m else 0.0
 
 # Plan Frame
 anugerah_max = TakafulPlan(

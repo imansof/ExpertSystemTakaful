@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from Takaful import signup as takaful_signup, login as takaful_login, get_recommendations
 from Takaful import PLAN_SIGNATURES
+from knowledge_base import plans, BENEFIT_TO_GOALS, RIDER_TO_GOALS
 import os
 
 app = Flask(__name__)
@@ -74,16 +75,22 @@ def package():
 
     goals_choices = build_goal_choices()
     selected_goals = []
-    recommended = None
+    #recommended = None
 
     if request.method == 'POST':
+        # 1. Gather inputs
         age = int(request.form['age'])
+        is_child = age < 19
         income = int(request.form['income'])
         gender = request.form['gender']
         marital_status = request.form['marital_status'].lower()
         has_dependents = request.form['has_dependents'].lower() == 'yes'
         selected_goals = request.form.getlist('goals')
+        # Only allow the Education goal for children
+        if 'education' in selected_goals and not is_child:
+            selected_goals.remove('education')
 
+        # 2. Get raw scores ([(plan_name, match_count), ...])
         username = session['username']
         result = get_recommendations(
             username=username,
@@ -94,16 +101,56 @@ def package():
             has_dependents=has_dependents,
             goals=selected_goals
         )
+        scored = result['plans']
         #recommended = result.get('plans', [])
+        TOP_N = 2
+        recommendations = []
+        count = 0
 
-        # result["plans"] is now a list of tuples
+        for plan_name, _ in scored:
+            plan = plans[plan_name]
+            # 1) skip non‑child plans if child
+            if age < 19 and not getattr(plan, "child_friendly", False):
+                continue
+
+            # 2) build direct_map
+            direct_map = {}
+            for benefit in plan.benefits:
+                for goal_key in BENEFIT_TO_GOALS.get(benefit, []):
+                    if goal_key in selected_goals:
+                        if goal_key == 'education':
+                            er = plan.education_age_range or (0, 0)
+                            if not (er[0] <= age <= er[1]):
+                                continue
+                        direct_map.setdefault(goal_key, []).append(benefit)
+
+            # 3) build indirect_map
+            indirect_map = {}
+            for rider in plan.riders:
+                for goal_key in RIDER_TO_GOALS.get(rider, []):
+                    if goal_key in selected_goals:
+                        indirect_map.setdefault(goal_key, []).append(rider)
+
+            # 4) append a single dict per plan
+            recommendations.append({
+                'name': plan_name,
+                'direct_map': direct_map,
+                'indirect_map': indirect_map
+            })
+
+            count += 1
+            if count >= TOP_N:
+                break
+
         return render_template(
             'Recommend_Page.html',
-            recommendations=result["plans"],
+            recommendations=recommendations,
             goals_choices=goals_choices,
-            selected_goals=selected_goals
+            selected_goals=selected_goals,
+            plans=plans,
+            age=age
         )
-
+    # GET: just show form
     return render_template(
         'package.html',
         goals_choices=goals_choices,
@@ -116,7 +163,6 @@ def package():
 def agent():
     return render_template('agent.html')
 
-from knowledge_base import plans
 @app.route("/all-packages")
 def all_packages():
     return render_template("all-packages.html", plans=plans)

@@ -2,20 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Recommended Plans</title>
+  <title>Recommended Plans For You</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #eef6ff; padding: 40px; }
+    h1 { text-align: center; color: #0d6efd; }
+    .package-card h3 { color: #0d6efd; margin-top: 0; }
+    .package-card p { margin: 8px 0; font-size: 14px; color: #444; }
+    nav { position: sticky; top:0; background:#fff; border-bottom:1px solid #ddd; padding:12px 24px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+    nav a { color:#333; text-decoration:none; margin-left:20px; }
+    nav a.active { color:#0d6efd; font-weight:bold; text-decoration:underline; }
+    nav a.logout { color:#dc3545; }
+  </style>
 </head>
-<body class="bg-blue-50 font-sans min-h-screen">
+<body>
 
-  <!-- Navigation Bar (unchanged) -->
-  <nav class="bg-white shadow-md sticky top-0 z-50 p-4 flex justify-between items-center">
-    <!-- ... -->
+  <nav>
+    <div style="font-weight:600; font-size:18px; color:#0d6efd;">🧭 SureMatch</div>
+    <div>
+      <a href="{{ url_for('package') }}">🧠 Customized for You</a>
+      <a href="{{ url_for('all_packages') }}">📦 View All Packages</a>
+      <a href="{{ url_for('agent') }}">🧑‍💼 Find Agent</a>
+      <a href="/faq">❓ FAQs</a>
+      <a href="/support">💬 Support</a>
+      <a href="{{ url_for('home') }}" class="logout">🔓 Log Out</a>
+    </div>
   </nav>
 
   <main class="max-w-4xl mx-auto mt-10 space-y-10 px-4">
 
     {% if recommendations %}
-    <!-- Show what the user selected -->
+    <!-- Show selected goals -->
     <section class="bg-white p-6 rounded-xl shadow-md">
       <h3 class="text-lg font-medium text-gray-700 mb-2">🎯 Your Selected Goals:</h3>
       <ul class="list-disc list-inside text-gray-800">
@@ -25,25 +42,69 @@
       </ul>
     </section>
 
-    <!-- Recommended Plans Section -->
-    <section class="bg-white p-6 rounded-xl shadow-md">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">✨ Recommended Plan(s) for You</h2>
-      <ul class="space-y-4">
-        {% for plan, match_count in recommendations %}
-          <li>
-            <a href="{{ url_for('show_plan_details', plan_name=plan) }}">{{ plan }}</a>
-            <span> ({{ match_count }} / {{ selected_goals|length }} goals matched) </span>
-          </li>
-        {% endfor %}
-      </ul>
+    <!-- Top recommendations -->
+    <section class="bg-white p-6 rounded-xl shadow-md package-card">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">
+        ✨ Top {{ recommendations|length }} Recommendation{{ recommendations|length > 1 and 's' or '' }}
+      </h2>
+
+      {% for rec in recommendations %}
+      <div class="mb-8">
+        <h3 class="text-xl text-blue-800 font-semibold mb-1">
+          <a href="{{ url_for('show_plan_details', plan_name=rec.name) }}" class="hover:underline">
+            {{ rec.name }}
+          </a>
+        </h3>
+
+        <p class="text-sm text-gray-600 mb-2">
+          Entry Age: {{ plans[rec.name].entry_age }} |
+          Min Contribution: {{ plans[rec.name].min_monthly_contribution }} |
+          Coverage Term: {{ plans[rec.name].coverage_term }}
+          {% if age < 19 and plans[rec.name].__dict__.get("child_friendly") %}
+            <span class="ml-2 text-green-600 font-medium">✔️ Child-Friendly</span>
+          {% endif %}
+        </p>
+
+        <p class="text-gray-700 mb-2">
+          We recommend <strong>{{ rec.name }}</strong> because it matches your criteria and provides benefits that satisfy your selected goals:
+        </p>
+
+        <!-- Direct benefits per goal -->
+        <ul class="list-disc list-inside ml-6 mb-4 text-gray-700">
+          {% for goal_key, benefits in rec.direct_map.items() %}
+            <li>
+              <strong>{{ goals_choices[goal_key] }}:</strong>
+              {{ benefits | join(', ') }}
+            </li>
+          {% endfor %}
+        </ul>
+
+        <!-- Optional riders per goal -->
+        {% if rec.indirect_map %}
+        <p class="text-gray-700 mb-2">
+          It also allows these optional riders:
+        </p>
+        <ul class="list-disc list-inside ml-6 text-gray-700">
+          {% for goal_key, riders in rec.indirect_map.items() %}
+            <li>
+              <strong>{{ goals_choices[goal_key] }}:</strong>
+              {{ riders | join(', ') }}
+            </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
     </section>
 
-    {% elif recommendations is not none %}
-    <!-- Fallback Message -->
+    {% else %}
+    <!-- Fallback -->
     <section class="bg-white p-6 rounded-xl shadow-md">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">✨ Recommended Plan(s) for You</h2>
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">No Exact Match Found</h2>
       <p class="text-gray-700">
-        No exact match found for all your selected goals. You may still consider contacting an agent
+        We couldn’t find a plan that fits all your selected goals perfectly.
+        Our top suggestion is <strong>PruBSN Lindung Famili (EPF)</strong>, which provides solid basic protection.
+        Feel free to <a href="{{ url_for('agent') }}" class="text-blue-600 underline">contact an agent</a>
         for a tailored solution.
       </p>
     </section>
