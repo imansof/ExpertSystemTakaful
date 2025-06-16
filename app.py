@@ -171,8 +171,14 @@ def all_packages():
 def faq():
     return render_template('faq.html')
 
-@app.route('/support')
+@app.route('/support', methods=['GET', 'POST'])
 def support():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+        print(f"Support message from {name} ({email}): {message}")  # or save to DB/email etc.
+        return render_template('support.html', success=True)
     return render_template('support.html')
 
 @app.route('/details/<plan_name>')

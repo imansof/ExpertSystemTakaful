@@ -53,10 +53,7 @@ def normalize(text: str) -> str:
     return s.strip('_')
 
 def build_plan_signatures():
-    """
-        Build a dict mapping each plan name to the set of goal-category tokens
-        it can satisfy (directly via benefits, indirectly via riders).
-        """
+    """Build a dict mapping each plan name to the set of goal-category tokens it can satisfy (directly via benefits, indirectly via riders)."""
     sigs = {}
     for name, plan in all_plans.items():
         # plan.direct_goals and plan.indirect_goals are lists of keys like 'cancer_coverage'
@@ -154,9 +151,20 @@ def get_recommendations(username, age, income, gender,
     for plan_name, match_count in raw_scores:
         plan = all_plans[plan_name]
 
-        # age eligibility
-        min_age, max_age = plan.age_range
-        if not (min_age <= age <= max_age):
+        # Age eligibility logic using structured age attributes
+        if age < 0:
+            if not getattr(plan, 'allow_prenatal', False):
+                continue
+        elif age == 0:
+            if not getattr(plan, 'allow_newborn', False):
+                continue
+        else:
+            if not (plan.min_entry_age <= age <= plan.max_entry_age):
+                continue
+
+        # gender eligibility
+        # plan.gender is "Male", "Female", or "Both"
+        if plan.gender != "Both" and plan.gender.lower() != gender.lower():
             continue
 
         # affordability (use 5% of income as threshold)

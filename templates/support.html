@@ -113,7 +113,7 @@
   <h1>💬 Need Help?</h1>
   <p style="color: #555;">Send us a message and we'll get back to you as soon as possible.</p>
 
-  <form method="POST" action="/submit-support">
+  <form method="POST" action="{{ url_for('support') }}">
     <label for="name">Your Name</label>
     <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
@@ -124,6 +124,10 @@
     <textarea id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
 
     <button type="submit">Send Message</button>
+    {% if success %}
+      <p style="color: green; margin-top: 20px;">✅ Thank you! Your message has been sent.</p>
+    {% endif %}
+
   </form>
 </div>
 

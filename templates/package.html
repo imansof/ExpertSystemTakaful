@@ -47,13 +47,12 @@
     <form action="{{ url_for('package') }}" method="POST" style="font-size: 15px;">
       <div class="chat-bubble bot">🎂 What's your date of birth?</div>
       <input type="date" name="dob" class="input-field" id="dob" onchange="updateAge()" required>
+      <p id="age-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
+        (If you’re buying for a child, enter their date of birth or expected due here; then provide your own income, marital status, and dependents.)
+      </p>
 
       <div class="chat-bubble bot">📅 Your age is:</div>
       <input type="number" name="age" class="input-field" id="age" readonly required>
-      <p id="age-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
-        (If you’re buying for a child, enter their date of birth here; then provide your own income, marital status, and dependents.)
-      </p>
-
 
       <div class="chat-bubble bot">🚻 What is your gender?</div>
       <select name="gender" class="input-field" required>
@@ -61,6 +60,9 @@
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>
+      <p id="gender-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
+        (If you’re buying for a child, enter their gender here; then provide your own income, marital status, and dependents.)
+      </p>
 
       <div class="chat-bubble bot">💵 What's your monthly income (RM)?</div>
       <input type="number" name="income" class="input-field" placeholder="e.g. 3500" min="0" required>
