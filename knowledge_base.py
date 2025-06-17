@@ -13,6 +13,7 @@ BENEFIT_TO_GOALS = {
     'Death Benefit': ['basic_protection', 'family_protection'],
     'Total and Permanent Disability (TPD) Benefit': ['basic_protection', 'family_protection'],
     'Accidental Death Benefit (Up to 500%)': ['basic_protection', 'family_protection'],
+    'Accidental Death Benefit (Up to 300%)': ['basic_protection', 'family_protection'],
     'Diagnosis of Cancer': ['cancer_coverage'],
     'Room & Board Benefit: Hospital Daily Room & Board Benefit': ['medical_coverage'],
     'Hospital & Surgical Benefits: Intensive Care Unit/Cardiac Care Unit Benefit, In-Hospital & Related Services Benefit': ['medical_coverage'],
@@ -22,19 +23,20 @@ BENEFIT_TO_GOALS = {
     'Outpatient Cancer Treatment Benefit': ['cancer_coverage'],
     'Outpatient Kidney Dialysis Treatment Benefit': ['medical_coverage'],
     'EduAchieve Bonus': ['education'],
-    'Kasih Bonus': ['charity'],
+    'Kasih Bonus': ['investment'],
+    'Critical Illness Benefit': ['critical_illness'],
     # Anggun-specific
     'Female Illness Benefit': ['female_protection'],
     'Female Care Benefit': ['female_protection'],
     'Mental Care Benefit': ['mental_care'],
     'Life Stage Benefit': ['basic_protection'],
     # Gadai Janji
-    'Compassionate Benefit: RM2,000 upon your death': ['funeral_cover'],
-    'RM1,000 upon death of your spouse': ['funeral_cover'],
-    'RM500 upon death of your children (maximum 2 children below age 20)': ['funeral_cover'],
-    'RM1,000 medical expenses if you suffer Total and Permanent Disability (TPD)': ['medical_coverage'],
+    'Spouse Death Benefit': ['funeral_cover'],
+    'Children Death Benefit': ['funeral_cover'],
     # Aspirasi
-    'Annual Cash Payout': ['investment']
+    'Annual Cash Payout': ['investment'],
+    'Medic TotalCare': ['medical_coverage'],
+    'Unlimited Lifetime Limit': ['basic_protection']
 }
 
 # Map raw rider strings to indirect goal categories
@@ -75,11 +77,14 @@ RIDER_TO_GOALS = {
 
 # ======== TakafulPlan Class ========
 class TakafulPlan:
-    def __init__(self, name, coverage_term, contribution_term, entry_age, min_entry_age, max_entry_age, allow_prenatal, allow_newborn, expiry_age,
+    def __init__(self, name, coverage_term, coverage_term_years, coverage_until_ages, yearly_renewable, contribution_term, entry_age, min_entry_age, max_entry_age, allow_prenatal, allow_newborn, expiry_age,
                  min_monthly_contribution, min_sum_covered, gender, benefits, riders, goal
                  ):
         self.name = name
         self.coverage_term = coverage_term
+        self.coverage_term_years = coverage_term_years
+        self.coverage_until_ages = coverage_until_ages
+        self.yearly_renewable = yearly_renewable
         self.contribution_term = contribution_term
         self.entry_age = entry_age
         self.min_entry_age = min_entry_age
@@ -128,13 +133,16 @@ class TakafulPlan:
 anugerah_max = TakafulPlan(
     name="PruBSN AnugerahMax",
     coverage_term="5, 10, 20 years or until age 70, 80, 90 or 100",
+    coverage_term_years = [5, 10, 20],
+    coverage_until_ages = [70, 80, 90, 100],
+    yearly_renewable = False,
     contribution_term="Throughout the coverage term",
     entry_age="1–70",
     min_entry_age = 1, # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age = 70,
     allow_prenatal = False,  # True if supports pregnancy-based enrollment
     allow_newborn = False,   # True if supports 14-day-old babies
-    expiry_age="100",
+    expiry_age="Up to 100",
     min_monthly_contribution="RM50",
     min_sum_covered="RM10,000",
     gender="Both",
@@ -159,13 +167,16 @@ anugerah_max = TakafulPlan(
 warisan_gold = TakafulPlan(
     name="PruBSNWarisanGold",
     coverage_term="20 years or until age 70, 80, 90 or 100",
+    coverage_term_years = [20],
+    coverage_until_ages = [70, 80, 90, 100],
+    yearly_renewable=False,
     contribution_term="5, 10, 20 years or throughout the coverage term",
     entry_age="14 days -70",
     min_entry_age=0,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=70,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=True,  # True if supports 14-day-old babies
-    expiry_age="100",
+    expiry_age="Up to 100",
     min_monthly_contribution="RM100 for adult and RM50 for child",
     min_sum_covered="Adult: RM350,000, Child: RM250,000",
     gender="Both",
@@ -192,6 +203,9 @@ warisan_gold = TakafulPlan(
 cegah_famili_epf = TakafulPlan(
     name="PruBSN Cegah Famili (EPF)",
     coverage_term="Yearly Renewable up to age 75",
+    coverage_term_years = [],
+    coverage_until_ages = [75],
+    yearly_renewable=True,
     contribution_term="Throughout coverage term",
     entry_age="EPF Member/Spouse: 19 to 65; Children: 14 days to 65",
     min_entry_age=0,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
@@ -213,6 +227,9 @@ cegah_famili_epf = TakafulPlan(
 lindung_famili_epf = TakafulPlan(
     name="PruBSN Lindung Famili (EPF)",
     coverage_term="Yearly Renewable up to age 75",
+    coverage_term_years=[],
+    coverage_until_ages=[75],
+    yearly_renewable=True,
     contribution_term="Throughout coverage term",
     entry_age="EPF Member/Spouse: 19 to 65; Children: 14 days to 65",
     min_entry_age=0,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
@@ -235,13 +252,16 @@ lindung_famili_epf = TakafulPlan(
 asas360 = TakafulPlan(
     name="PruBSN Asas360",
     coverage_term="20 years or until age 60, 70, 80, 90 or 100",
+    coverage_term_years = [20],
+    coverage_until_ages = [60, 70, 80, 90, 100],
+    yearly_renewable=False,
     contribution_term="Up to age 100",
     entry_age="Prenatal/Child: 13 gestational weeks of pregnancy to 18 years old; Adult: 19 to 70 years old",
     min_entry_age=-1,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=70,
     allow_prenatal=True,  # True if supports pregnancy-based enrollment
     allow_newborn=True,  # True if supports 14-day-old babies
-    expiry_age="100",
+    expiry_age="Up to 100",
     min_monthly_contribution="RM100 for adult and RM50 for child",
     min_sum_covered="RM25,000",
     gender="Both",
@@ -263,13 +283,16 @@ asas360 = TakafulPlan(
 damaigenz = TakafulPlan(
     name="PruBSN DamaiGenZ",
     coverage_term="5, 10, 20 years or until age 70, 80, 90 or 100",
+    coverage_term_years = [5, 10, 20],
+    coverage_until_ages = [70, 80, 90, 100],
+    yearly_renewable=False,
     contribution_term="Throughout the coverage term",
     entry_age="1–70",
     min_entry_age=1,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=70,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=False,  # True if supports 14-day-old babies
-    expiry_age="100",
+    expiry_age="Up to 100",
     min_monthly_contribution="RM50",
     min_sum_covered="RM10,000",
     gender="Both",
@@ -294,13 +317,16 @@ damaigenz = TakafulPlan(
 damai = TakafulPlan(
     name="PruBSN Damai",
     coverage_term="5, 10, 20 years or until age 70, 80, 90 or 100",
+    coverage_term_years = [5, 10, 20],
+    coverage_until_ages = [70, 80, 90, 100],
+    yearly_renewable=False,
     contribution_term="Throughout the coverage term",
     entry_age="1–70",
     min_entry_age=1,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=70,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=False,  # True if supports 14-day-old babies
-    expiry_age="100",
+    expiry_age="Up to 100",
     min_monthly_contribution="RM50",
     min_sum_covered="RM10,000",
     gender="Both",
@@ -326,6 +352,9 @@ damai = TakafulPlan(
 anggun = TakafulPlan(
     name="PruBSN Anggun",
     coverage_term="Up to 70 or 80",
+    coverage_term_years = [],
+    coverage_until_ages = [70, 80],
+    yearly_renewable=False,
     contribution_term="Throughout the coverage term",
     entry_age="19–60",
     min_entry_age=19,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
@@ -354,13 +383,16 @@ anggun = TakafulPlan(
 lindungi = TakafulPlan(
     name="PruBSN Lindungi",
     coverage_term="Yearly renewable until maximum expiry age of 70",
+    coverage_term_years = [],
+    coverage_until_ages = [70],
+    yearly_renewable=True,
     contribution_term="Throughout the coverage term",
     entry_age="19–60",
     min_entry_age=19,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=60,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=False,  # True if supports 14-day-old babies
-    expiry_age="70",
+    expiry_age="Up to 70",
     min_monthly_contribution="RM4.5",
     min_sum_covered="RM20,000",
     gender="Both",
@@ -375,13 +407,16 @@ lindungi = TakafulPlan(
 cancer_plan = TakafulPlan(
     name="Cancer Plan",
     coverage_term="Yearly renewable until maximum expiry age of 70",
+    coverage_term_years = [],
+    coverage_until_ages = [70],
+    yearly_renewable=True,
     contribution_term="Throughout the coverage term",
     entry_age="19–60",
     min_entry_age=19,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=60,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=False,  # True if supports 14-day-old babies
-    expiry_age="70",
+    expiry_age="Up to 70",
     min_monthly_contribution="RM2.4",
     min_sum_covered="RM20,000",
     gender="Both",
@@ -395,6 +430,9 @@ cancer_plan = TakafulPlan(
 gadai_janji = TakafulPlan(
     name="PruBSN Gadai Janji",
     coverage_term="5–33 years",
+    coverage_term_years = [i for i in range(5, 34)],
+    coverage_until_ages = [],
+    yearly_renewable=False,
     contribution_term="5, 10, 20 years or throughout the coverage term",
     entry_age="19–70",
     min_entry_age=19,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
@@ -419,6 +457,9 @@ gadai_janji = TakafulPlan(
 aspirasi = TakafulPlan(
     name="PruBSN Aspirasi",
     coverage_term="15, 20, 25 or 30 years",
+    coverage_term_years = [15, 20, 25, 30],
+    coverage_until_ages = [],
+    yearly_renewable=False,
     contribution_term="5, 10 or 20 years",
     entry_age="1–70",
     min_entry_age=1,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
@@ -450,13 +491,16 @@ aspirasi = TakafulPlan(
 medic_plan = TakafulPlan(
     name="Medic Plan",
     coverage_term="Yearly renewable until maximum expiry age of 70",
+    coverage_term_years = [],
+    coverage_until_ages = [70],
+    yearly_renewable=True,
     contribution_term="Throughout the coverage term",
     entry_age="19–45",
     min_entry_age=19,  # e.g. 0 = newborn, 0.25 = 3 months, 1 = 1 year
     max_entry_age=45,
     allow_prenatal=False,  # True if supports pregnancy-based enrollment
     allow_newborn=False,  # True if supports 14-day-old babies
-    expiry_age="70",
+    expiry_age="Up to 70",
     min_monthly_contribution="RM28.8 per day",
     min_sum_covered="RM100,000",
     gender="Both",

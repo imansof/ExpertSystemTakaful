@@ -48,7 +48,7 @@
       <div class="chat-bubble bot">🎂 What's your date of birth?</div>
       <input type="date" name="dob" class="input-field" id="dob" onchange="updateAge()" required>
       <p id="age-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
-        (If you’re buying for a child, enter their date of birth or expected due here; then provide your own income, marital status, and dependents.)
+        (If you’re buying for a child, enter their date of birth or expected due date here; then provide your own income, marital status, and dependents.)
       </p>
 
       <div class="chat-bubble bot">📅 Your age is:</div>
@@ -61,7 +61,7 @@
         <option value="Female">Female</option>
       </select>
       <p id="gender-note" style="font-size:12px; color:#888; margin-top:-4px; margin-bottom:12px;">
-        (If you’re buying for a child, enter their gender here; then provide your own income, marital status, and dependents.)
+        (If you’re buying for a child whose gender isn’t known yet, just pick either Male or Female for now, your recommendation won’t be affected; then provide your own income, marital status, and dependents.)
       </p>
 
       <div class="chat-bubble bot">💵 What's your monthly income (RM)?</div>
@@ -79,6 +79,14 @@
         <option value="">-- Select Option --</option>
         <option value="yes">Yes</option>
         <option value="no">No</option>
+      </select>
+
+      <div class="chat-bubble bot">📆 What is your preferred coverage duration?</div>
+      <select name="coverage_preference" class="input-field" required>
+        <option value="">-- Select Option --</option>
+        <option value="short">Short-term (5–10 years or up to less than age 60)</option>
+        <option value="medium">Medium-term (15–20 years or up to age 65-75)</option>
+        <option value="long">Long-term (25+ years or up to age 80+)</option>
       </select>
 
       <div class="chat-bubble bot">

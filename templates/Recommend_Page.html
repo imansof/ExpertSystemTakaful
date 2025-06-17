@@ -66,7 +66,7 @@
         </p>
 
         <p class="text-gray-700 mb-2">
-          We recommend <strong>{{ rec.name }}</strong> because it matches your criteria and provides benefits that satisfy your selected goals:
+          We recommend <strong>{{ rec.name }}</strong> because it matches your budget and provides benefits that satisfy your selected goals:
         </p>
 
         <!-- Direct benefits per goal -->
@@ -93,6 +93,28 @@
           {% endfor %}
         </ul>
         {% endif %}
+
+        {% if coverage_pref and rec.coverage_match %}
+          <p class="text-gray-700 mt-2">
+            ✅ This plan also aligns with your preferred
+            <strong>{{ coverage_pref }}</strong>-term coverage.
+          </p>
+        {% endif %}
+
+        {% if rec.family_boost %}
+          <p class="text-gray-700 mt-2">
+            👪 Because you’re
+            {% if marital_status == 'married' and has_dependents %}
+              married and have dependents
+            {% elif marital_status == 'married' %}
+              married
+            {% elif has_dependents %}
+              a parent
+            {% endif %},
+            this plan gets extra family‑friendly perks.
+          </p>
+        {% endif %}
+
       </div>
       {% endfor %}
     </section>

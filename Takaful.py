@@ -106,7 +106,7 @@ for plan_name, signature in PLAN_SIGNATURES.items():
 
 # ======== MAIN RECOMMENDATION FUNCTION ========
 def get_recommendations(username, age, income, gender,
-                        marital_status, has_dependents, goals):
+                        marital_status, has_dependents, goals, coverage_pref=None):
     """
     Save user input and recommend plans based on goal-category matching.
     Returns a dict with:
@@ -119,8 +119,8 @@ def get_recommendations(username, age, income, gender,
         cursor = conn.cursor()
         cursor.execute('''
                        INSERT INTO user_input
-                           (username, age, income, gender, marital_status, has_dependents, goals)
-                       VALUES (?, ?, ?, ?, ?, ?, ?)
+                           (username, age, income, gender, marital_status, has_dependents, coverage_pref, goals)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                        ''', (
                            username,
                            age,
@@ -128,6 +128,7 @@ def get_recommendations(username, age, income, gender,
                            gender,
                            marital_status,
                            int(has_dependents),
+                           coverage_pref,
                            ",".join(goals)
                        ))
         conn.commit()
@@ -143,6 +144,14 @@ def get_recommendations(username, age, income, gender,
         # count how many of the user’s goals this plan can satisfy
         plan_goals = set(plan.direct_goals + plan.indirect_goals)
         match_count = len(user_goals & plan_goals)
+        # 👪 Add bonus points if plan suits family/dependent needs
+        if marital_status == "married" or has_dependents:
+            # Plans with "family_protection" goals or contributor-related riders get bonus
+            if "family_protection" in plan_goals:
+                match_count += 1
+            if any("Contributor" in rider for rider in plan.riders):
+                match_count += 1
+
         if match_count:
             raw_scores.append((plan_name, match_count))
 
@@ -170,6 +179,30 @@ def get_recommendations(username, age, income, gender,
         # affordability (use 5% of income as threshold)
         if plan.min_contribution_value > 0.05 * income:
             continue
+
+        # Optional: filter by preferred coverage length
+        if coverage_pref:
+            acceptable = False
+            if coverage_pref == 'short':
+                if any(y <= 10 for y in plan.coverage_term_years):
+                    acceptable = True
+                if any(a <= 60 for a in plan.coverage_until_ages):  # SHORT: up to 60
+                    acceptable = True
+
+            elif coverage_pref == 'medium':
+                if any(15 <= y <= 20 for y in plan.coverage_term_years):
+                    acceptable = True
+                if any(65 <= a <= 75 for a in plan.coverage_until_ages):  # MEDIUM: 65–75
+                    acceptable = True
+
+            elif coverage_pref == 'long':
+                if any(y >= 25 for y in plan.coverage_term_years):
+                    acceptable = True
+                if any(a >= 80 for a in plan.coverage_until_ages):  # LONG: 80+
+                    acceptable = True
+
+            if not acceptable:
+                continue
 
         filtered.append((plan_name, match_count))
 
