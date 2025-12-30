@@ -18,6 +18,11 @@
             max-width: 600px;
             margin: auto;
         }
+        .disclaimer {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 20px;
+        }
         h1 {
             color: #0d6efd;
         }
@@ -43,14 +48,13 @@
 
         <!-- ✅ Link to Login Page -->
         <a href="{{ url_for('login') }}" class="start-button">🔐 Login to Continue</a>
-
-        <!-- 📌 Disclaimer -->
+    </div>
+    <!-- 📌 Disclaimer -->
         <p class="disclaimer">
             Disclaimer: All product information used in this system is sourced from the official PruBSN website.
             This application is for educational and advisory purposes only and does not constitute official
             insurance advice or endorsement by PruBSN.
         </p>
-    </div>
 </body>
 </html>
 
