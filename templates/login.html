@@ -10,6 +10,18 @@
             padding: 40px;
             text-align: center;
         }
+        .app-footer {
+            max-width: 500px;
+            margin: 30px auto 10px;
+            text-align: center;
+        }
+        
+        .disclaimer {
+            font-size: 0.8rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
         .container {
             background: white;
             padding: 30px;
@@ -75,6 +87,8 @@
             Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
         </div>
     </div>
+    {% include "footer.html" %}
+
 </body>
 </html>
 
