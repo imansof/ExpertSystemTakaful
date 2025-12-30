@@ -18,11 +18,18 @@
             max-width: 600px;
             margin: auto;
         }
+        .app-footer {
+            max-width: 500px;
+            margin: 30px auto 10px;
+            text-align: center;
+        }
+        
         .disclaimer {
             font-size: 0.8rem;
             color: #6c757d;
-            margin-top: 20px;
+            line-height: 1.4;
         }
+
         h2 {
             color: #0d6efd;
             margin-bottom: 15px;
@@ -55,10 +62,7 @@
 
         <a href="{{ url_for('package') }}" class="proceed-button">Start Questionnaire →</a>
     </div>
-        <p class="disclaimer">
-            Disclaimer: All product information used in this system is sourced from the official PruBSN website.
-            This application is for educational and advisory purposes only and does not constitute official
-            insurance advice or endorsement by PruBSN.
-        </p>
+    {% include "footer.html" %}
+
 </body>
 </html>
