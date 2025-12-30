@@ -20,6 +20,17 @@
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0,0,0,0.1);
     }
+    .app-footer {
+        max-width: 500px;
+        margin: 30px auto 10px;
+        text-align: center;
+    }
+    
+    .disclaimer {
+        font-size: 0.8rem;
+        color: #6c757d;
+        line-height: 1.4;
+    }
 
     h1 {
       color: #0d6efd;
@@ -124,7 +135,9 @@
 <div class="container">
   <h1>📞 Get in Touch with an Agent</h1>
   <p style="color: #555;">Below are our available agents sorted by region</p>
-
+  <p class="disclaimer">
+    (Please note that these are placeholder information and are not real, usable information.)
+  </p>
   <!-- Sarawak -->
   <div class="region-title">📍 Sarawak</div>
   <div class="agent-card">
@@ -159,6 +172,7 @@
 
   <a href="{{ url_for('package') }}" class="back-button">⬅ Back</a>
 </div>
+{% include "footer.html" %}
 
 </body>
 </html>
